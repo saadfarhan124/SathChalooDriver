@@ -31,8 +31,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var ListDropOffLatLng: MutableList<LatLng>
 
     //Permission Vars
-    private val FINE_LOCATION:String = Manifest.permission.ACCESS_FINE_LOCATION
-    private val COARSE_LOCATION:String = Manifest.permission.ACCESS_COARSE_LOCATION
+    private val FINE_LOCATION: String = Manifest.permission.ACCESS_FINE_LOCATION
+    private val COARSE_LOCATION: String = Manifest.permission.ACCESS_COARSE_LOCATION
 
     //Permission Flag
     private var permissionFlag = false
@@ -52,50 +52,60 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    private fun init(){
+    private fun init() {
 
         ListPickUpLatLng = mutableListOf<LatLng>()
         ListDropOffLatLng = mutableListOf<LatLng>()
     }
 
-    private fun loadroutes(){
+    private fun loadroutes() {
         var db = Util.getFireStoreInstance()
         //Retrieve route ID
         db.collection("driver_routes")
             .whereEqualTo("driverId", Util.getDriverId())
             .get()
-            .addOnCompleteListener{taskGetRouteId ->
-                if(taskGetRouteId.isSuccessful){
+            .addOnCompleteListener { taskGetRouteId ->
+                if (taskGetRouteId.isSuccessful) {
                     //get starting and ending point of route pick up and drop off
                     var startingPoint = taskGetRouteId.result!!.first()["startingGeoPoint"] as GeoPoint
                     var endingPoint = taskGetRouteId.result!!.first()["endingGeoPoint"] as GeoPoint
+                    var startingPointLatLng = LatLng(startingPoint.latitude, startingPoint.longitude)
+                    var endingPointLatLng = LatLng(endingPoint.latitude, endingPoint.longitude)
                     addMarker(
-                        LatLng(startingPoint.latitude, startingPoint.longitude)
-                    , "Starting"
+                        startingPointLatLng
+                        , "Starting"
                     )
-                    addMarker(LatLng(endingPoint.latitude, endingPoint.longitude)
-                        , "Ending")
+                    addMarker(
+                        endingPointLatLng
+                        , "Ending"
+                    )
                     //get bookings on that route for that day
                     db.collection("booking")
                         .whereEqualTo("routeId", taskGetRouteId.result!!.first()["routeId"])
                         .whereEqualTo("bookingDate", Util.getFormattedDate())
                         .get()
-                        .addOnCompleteListener{taskGetBookingsAccordingToRouteIdAndCurrentDay ->
-                            if(taskGetBookingsAccordingToRouteIdAndCurrentDay.isSuccessful){
-                                for (doc in taskGetBookingsAccordingToRouteIdAndCurrentDay.result!!){
-                                    var pickUpLatLng = LatLng(doc["pickupLat"].toString().toDouble(),
-                                        doc["pickupLong"].toString().toDouble())
-                                    var droppOffLatLng = LatLng(doc["dropOffLat"].toString().toDouble(),
-                                        doc["dropOffLong"].toString().toDouble())
+                        .addOnCompleteListener { taskGetBookingsAccordingToRouteIdAndCurrentDay ->
+                            if (taskGetBookingsAccordingToRouteIdAndCurrentDay.isSuccessful) {
+                                for (doc in taskGetBookingsAccordingToRouteIdAndCurrentDay.result!!) {
+                                    var pickUpLatLng = LatLng(
+                                        doc["pickupLat"].toString().toDouble(),
+                                        doc["pickupLong"].toString().toDouble()
+                                    )
+                                    var droppOffLatLng = LatLng(
+                                        doc["dropOffLat"].toString().toDouble(),
+                                        doc["dropOffLong"].toString().toDouble()
+                                    )
                                     ListPickUpLatLng.add(pickUpLatLng)
                                     ListDropOffLatLng.add(droppOffLatLng)
                                     addMarkerPickUp(pickUpLatLng, "Pickup : ${doc["bookingMadeBy"]}")
                                     addMarkerDropOff(droppOffLatLng, "Dropoff : ${doc["bookingMadeBy"]}")
                                     moveCamera(pickUpLatLng, Util.getZoomValue())
                                     val url = Util.getURL(
-                                        pickUpLatLng,
-                                        droppOffLatLng,
-                                        getString(R.string.google_maps_key)
+                                        startingPointLatLng,
+                                        endingPointLatLng,
+                                        getString(R.string.google_maps_key),
+                                        ListPickUpLatLng,
+                                        ListDropOffLatLng
                                     )
                                     async {
                                         val result = URL(url).readText()
@@ -109,8 +119,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                             val bounds = LatLngBounds.Builder().include(
                                                 pickUpLatLng
                                             ).include(droppOffLatLng)
-                                                .include(LatLng(startingPoint.latitude,startingPoint.longitude))
-                                                .include(LatLng(endingPoint.latitude,endingPoint.longitude))
+                                                .include(LatLng(startingPoint.latitude, startingPoint.longitude))
+                                                .include(LatLng(endingPoint.latitude, endingPoint.longitude))
                                             mMap.animateCamera(
                                                 CameraUpdateFactory.newLatLngBounds(
                                                     bounds.build(),
@@ -120,7 +130,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                             mMap.addPolyline(
                                                 PolylineOptions().addAll(PolyUtil.decode(encodedString)).color(
                                                     Color.BLUE
-                                                ))
+                                                )
+                                            )
 
                                         }
                                     }
@@ -128,12 +139,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //                                Log.d("SAAAAAD", ListPickUpLatLng[0].toString())
                             }
                         }
-                }else{
+                } else {
                     Toast.makeText(applicationContext, "No routes found against driver", Toast.LENGTH_SHORT).show()
                 }
             }
 
     }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -155,63 +167,71 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
-    private fun initMap(){
+    private fun initMap() {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
     //Function to move Camera
-    private fun moveCamera(latLng: LatLng, zoom:Float){
+    private fun moveCamera(latLng: LatLng, zoom: Float) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
     }
 
     //function to add pickup marker
-    private fun addMarkerPickUp(latlng: LatLng, title:String?){
+    private fun addMarkerPickUp(latlng: LatLng, title: String?) {
         val markerOptions = MarkerOptions().position(latlng).title(title)
-            .icon(BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_BLUE
-            ))
+            .icon(
+                BitmapDescriptorFactory.defaultMarker(
+                    BitmapDescriptorFactory.HUE_BLUE
+                )
+            )
         mMap.addMarker(markerOptions)
     }
 
     //function to add droppoff marker
-    private fun addMarkerDropOff(latlng: LatLng, title:String?){
+    private fun addMarkerDropOff(latlng: LatLng, title: String?) {
         val markerOptions = MarkerOptions().position(latlng).title(title)
-            .icon(BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_VIOLET
-            ))
+            .icon(
+                BitmapDescriptorFactory.defaultMarker(
+                    BitmapDescriptorFactory.HUE_VIOLET
+                )
+            )
         mMap.addMarker(markerOptions)
     }
 
     //Function to add markets
-    private fun addMarker(latlng: LatLng, title:String?){
+    private fun addMarker(latlng: LatLng, title: String?) {
         val markerOptions = MarkerOptions().position(latlng).title(title)
         mMap.addMarker(markerOptions)
     }
 
     //First
     //Function to get permission
-    private fun getLocationPermission(){
+    private fun getLocationPermission() {
         val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-        if(ContextCompat.checkSelfPermission(applicationContext,FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(applicationContext,COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(applicationContext, FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    applicationContext,
+                    COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
                 permissionFlag = true
                 initMap()
-            }else{
+            } else {
                 ActivityCompat.requestPermissions(this!!, permissions, Util.getLocationPermissionCode())
             }
-        }else{
+        } else {
             ActivityCompat.requestPermissions(this!!, permissions, Util.getLocationPermissionCode())
         }
     }
 
     //Permission result callback
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when(requestCode){
-            Util.getLocationPermissionCode() -> if(grantResults.isNotEmpty()){
-                for(i in 0 until grantResults.size - 1 ){
-                    if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+        when (requestCode) {
+            Util.getLocationPermissionCode() -> if (grantResults.isNotEmpty()) {
+                for (i in 0 until grantResults.size - 1) {
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                         permissionFlag = false
                         return
                     }
