@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.google.maps.android.PolyUtil
 import org.jetbrains.anko.async
 import org.jetbrains.anko.uiThread
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
@@ -42,13 +44,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //        val mapFragment = supportFragmentManager
 //            .findFragmentById(R.id.map) as SupportMapFragment
 //        mapFragment.getMapAsync(this)
+
         getLocationPermission()
         init()
         loadroutes()
+
     }
 
 
     private fun init(){
+
         ListPickUpLatLng = mutableListOf<LatLng>()
         ListDropOffLatLng = mutableListOf<LatLng>()
     }
@@ -82,8 +87,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                         doc["pickupLong"].toString().toDouble())
                                     var droppOffLatLng = LatLng(doc["dropOffLat"].toString().toDouble(),
                                         doc["dropOffLong"].toString().toDouble())
-//                                    ListPickUpLatLng.add(pickUpLatLng)
-//                                    ListDropOffLatLng.add(droppOffLatLng)
+                                    ListPickUpLatLng.add(pickUpLatLng)
+                                    ListDropOffLatLng.add(droppOffLatLng)
                                     addMarkerPickUp(pickUpLatLng, "Pickup : ${doc["bookingMadeBy"]}")
                                     addMarkerDropOff(droppOffLatLng, "Dropoff : ${doc["bookingMadeBy"]}")
                                     moveCamera(pickUpLatLng, Util.getZoomValue())
@@ -96,6 +101,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                         val result = URL(url).readText()
                                         uiThread {
                                             val response = JSONObject(result)
+                                            Log.d("Billie", response.toString())
                                             val routes: JSONArray = response.getJSONArray("routes")
                                             val routesObject = routes.getJSONObject(0)
                                             val polylines = routesObject.getJSONObject("overview_polyline")

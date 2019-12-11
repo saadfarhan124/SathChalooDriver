@@ -41,4 +41,5 @@ dependencies {
     implementation 'com.beust:klaxon:0.30'
     //Map Utils
     implementation 'com.google.maps.android:android-maps-utils:0.5'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
 }

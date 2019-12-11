@@ -1,5 +1,6 @@
 package com.example.sathchaloodriver.Utilities
 
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import java.time.LocalDateTime
@@ -32,11 +33,21 @@ class Util {
         }
 
         fun getURL(from : LatLng, to : LatLng, key:String) : String {
-            val origin = "origin=" + from.latitude + "," + from.longitude
-            val dest = "destination=" + to.latitude + "," + to.longitude
+            val origin = ""+from.latitude + "," + from.longitude
+            val dest = "" + to.latitude + "," + to.longitude
+
             val api_key = "key=${key}"
             val params = "$origin&$dest&$api_key"
-            return "https://maps.googleapis.com/maps/api/directions/json?$params"
+//            return "https://maps.googleapis.com/maps/api/directions/json?$params"
+
+            return "https://maps.googleapis.com/maps/api/directions/json?\n" +
+                    "origin=$origin&destination=$dest\n" +
+                    "&waypoints=optimize:true|24.862942,67.073033\n" +
+                    "&key=$key\n"
+//            return "https://maps.googleapis.com/maps/api/directions/json?\n" +
+//                    "origin=sydney,au&destination=perth,au\n" +
+//                    "&waypoints=37.81223%2C144.96254%7C34.92788%2C138.60008\n" +
+//                    "&key=$key"
         }
 
         fun getLocationPermissionCode():Int{
