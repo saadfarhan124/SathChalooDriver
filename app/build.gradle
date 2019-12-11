@@ -36,4 +36,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    //Kalxon and Anko
+    implementation 'org.jetbrains.anko:anko-sdk15:0.8.2'
+    implementation 'com.beust:klaxon:0.30'
+    //Map Utils
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
 }
