@@ -115,10 +115,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                             val polylines = routesObject.getJSONObject("overview_polyline")
                                             val encodedString = polylines.getString("points")
                                             val bounds = LatLngBounds.Builder().include(
-                                                pickUpLatLng
-                                            ).include(droppOffLatLng)
-                                                .include(LatLng(startingPoint.latitude, startingPoint.longitude))
-                                                .include(LatLng(endingPoint.latitude, endingPoint.longitude))
+                                                LatLng(startingPoint.latitude, startingPoint.longitude)
+                                            ).include(LatLng(endingPoint.latitude, endingPoint.longitude))
+                                                .include(pickUpLatLng)
+                                                .include(droppOffLatLng)
                                             mMap.animateCamera(
                                                 CameraUpdateFactory.newLatLngBounds(
                                                     bounds.build(),
@@ -158,7 +158,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         if(permissionFlag){
-            mMap.isMyLocationEnabled = true
+            try{
+                mMap.isMyLocationEnabled = true
+            }catch (e: SecurityException){
+
+            }
+
         }
 
 
