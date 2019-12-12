@@ -1,6 +1,6 @@
 package com.example.sathchaloodriver.Utilities
 
-import android.util.Log
+
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import java.time.LocalDateTime

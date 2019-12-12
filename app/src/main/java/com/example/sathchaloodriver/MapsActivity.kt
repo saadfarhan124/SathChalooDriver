@@ -19,7 +19,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.firebase.firestore.GeoPoint
-import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
@@ -40,11 +39,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        val mapFragment = supportFragmentManager
-//            .findFragmentById(R.id.map) as SupportMapFragment
-//        mapFragment.getMapAsync(this)
-
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
         getLocationPermission()
         init()
         loadroutes()
@@ -85,6 +82,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         .whereEqualTo("bookingDate", Util.getFormattedDate())
                         .get()
                         .addOnCompleteListener { taskGetBookingsAccordingToRouteIdAndCurrentDay ->
+                            Log.d("SAAAAAD", taskGetBookingsAccordingToRouteIdAndCurrentDay.result.toString())
                             if (taskGetBookingsAccordingToRouteIdAndCurrentDay.isSuccessful) {
                                 for (doc in taskGetBookingsAccordingToRouteIdAndCurrentDay.result!!) {
                                     var pickUpLatLng = LatLng(
@@ -159,7 +157,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.isMyLocationEnabled = true
+        if(permissionFlag){
+            mMap.isMyLocationEnabled = true
+        }
+
 
         // Add a marker in Sydney and move the camera
 //        val sydney = LatLng(-34.0, 151.0)
@@ -168,9 +169,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun initMap() {
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+
     }
 
     //Function to move Camera
@@ -217,7 +216,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 permissionFlag = true
-                initMap()
             } else {
                 ActivityCompat.requestPermissions(this!!, permissions, Util.getLocationPermissionCode())
             }
@@ -237,7 +235,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
                 permissionFlag = true
-                initMap()
+
             }
         }
     }
