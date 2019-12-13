@@ -3,9 +3,12 @@ package com.example.sathchaloodriver
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
+import android.location.LocationListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import com.google.maps.android.PolyUtil
 import org.jetbrains.anko.async
 import org.jetbrains.anko.uiThread
@@ -13,21 +16,37 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.sathchaloodriver.Utilities.Util
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.firebase.firestore.GeoPoint
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
+
+    override fun onLocationChanged(location: Location?) {
+        moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
+    }
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onProviderEnabled(provider: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onProviderDisabled(provider: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private lateinit var mMap: GoogleMap
     private lateinit var ListPickUpLatLng: MutableList<LatLng>
     private lateinit var ListDropOffLatLng: MutableList<LatLng>
+
+    private lateinit var btnStartRide: Button
+    private lateinit var marker: Marker
+
 
     //Permission Vars
     private val FINE_LOCATION: String = Manifest.permission.ACCESS_FINE_LOCATION
@@ -53,6 +72,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         ListPickUpLatLng = mutableListOf<LatLng>()
         ListDropOffLatLng = mutableListOf<LatLng>()
+        btnStartRide = findViewById(R.id.btnStartRide)
+        btnStartRide.setOnClickListener{
+            moveCamera(LatLng(marker.position.latitude,marker.position.longitude), Util.getBiggerZoomValue())
+        }
     }
 
     private fun loadroutes() {
@@ -69,13 +92,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     var startingPointLatLng = LatLng(startingPoint.latitude, startingPoint.longitude)
                     var endingPointLatLng = LatLng(endingPoint.latitude, endingPoint.longitude)
                     addMarker(
-                        startingPointLatLng
-                        , "Starting"
-                    )
-                    addMarker(
                         endingPointLatLng
                         , "Ending"
                     )
+                    addMarker(
+                        startingPointLatLng
+                        , "Starting"
+                    )
+
                     //get bookings on that route for that day
                     db.collection("booking")
                         .whereEqualTo("routeId", taskGetRouteId.result!!.first()["routeId"])
@@ -156,6 +180,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     override fun onMapReady(googleMap: GoogleMap) {
+        MapsInitializer.initialize(applicationContext)
         mMap = googleMap
         if(permissionFlag){
             try{
@@ -166,12 +191,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         }
 
-
         // Add a marker in Sydney and move the camera
 //        val sydney = LatLng(-34.0, 151.0)
 //        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
+
+
 
     private fun initMap() {
 
@@ -207,7 +233,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //Function to add markets
     private fun addMarker(latlng: LatLng, title: String?) {
         val markerOptions = MarkerOptions().position(latlng).title(title)
-        mMap.addMarker(markerOptions)
+        marker = mMap.addMarker(markerOptions)
     }
 
     //First

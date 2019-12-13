@@ -32,6 +32,10 @@ class Util {
             return 10f
         }
 
+        fun getBiggerZoomValue(): Float {
+            return 15f
+        }
+
         fun getURL(
             from: LatLng, to: LatLng, key: String, listPickUpLatLng: MutableList<LatLng>,
             listDropOffLatLng: MutableList<LatLng>

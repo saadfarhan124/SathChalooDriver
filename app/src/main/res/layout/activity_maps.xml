@@ -13,6 +13,7 @@
             tools:context=".MapsActivity"
     />
     <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStartRide"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
