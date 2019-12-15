@@ -1,6 +1,7 @@
 package com.example.sathchaloodriver
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.firebase.firestore.GeoPoint
 import com.jakewharton.threetenabp.AndroidThreeTen
+import org.jetbrains.anko.enabled
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
@@ -29,6 +31,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
 
     override fun onLocationChanged(location: Location?) {
         moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
+        if (Util.getDistance(
+                LatLng(location!!.latitude, location!!.longitude),
+                endingPointLatLng
+            ) < 1000
+        ) {
+            btnEndRide.enabled = true
+        }
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -51,6 +60,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
     private lateinit var btnEndRide: Button
     private lateinit var marker: Marker
 
+    private lateinit var startingPointLatLng: LatLng
+    private lateinit var endingPointLatLng: LatLng
+
 
     //Permission Vars
     private val FINE_LOCATION: String = Manifest.permission.ACCESS_FINE_LOCATION
@@ -67,11 +79,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        AndroidThreeTen.init(this)
-        getLocationPermission()
-        init()
-        loadroutes()
+        if (Util.verifyAvailableNetwork(this)) {
+            AndroidThreeTen.init(this)
+            getLocationPermission()
+            init()
+            loadroutes()
+        } else {
+            val confirmDialog =
+                AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
+            confirmDialog.setTitle("Sath Chaloo")
+            confirmDialog.setMessage("Please connect to internet")
+            confirmDialog.setPositiveButton("Ok") { _, _ ->
+                finishAffinity();
+                System.exit(0)
+            }
+            confirmDialog.show()
 
+        }
     }
 
 
@@ -104,9 +128,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
                     var startingPoint =
                         taskGetRouteId.result!!.first()["startingGeoPoint"] as GeoPoint
                     var endingPoint = taskGetRouteId.result!!.first()["endingGeoPoint"] as GeoPoint
-                    var startingPointLatLng =
+                    startingPointLatLng =
                         LatLng(startingPoint.latitude, startingPoint.longitude)
-                    var endingPointLatLng = LatLng(endingPoint.latitude, endingPoint.longitude)
+                    endingPointLatLng = LatLng(endingPoint.latitude, endingPoint.longitude)
                     addMarkerEnding(
                         endingPointLatLng
                         , "Ending"
@@ -218,7 +242,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
             }
 
     }
-
 
 
     override fun onMapReady(googleMap: GoogleMap) {

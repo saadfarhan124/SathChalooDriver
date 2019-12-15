@@ -1,6 +1,10 @@
 package com.example.sathchaloodriver.Utilities
 
 
+import android.content.Context
+import android.location.Location
+import android.net.ConnectivityManager
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
 import org.threeten.bp.LocalDateTime;
@@ -62,6 +66,24 @@ class Util {
 
         fun getLocationPermissionCode(): Int {
             return 1234
+        }
+
+        fun getDistance(pickupLatLng: LatLng, dropOffLatLng: LatLng) : Float{
+            var location = Location("")
+            location.latitude = pickupLatLng.latitude
+            location.longitude = pickupLatLng.longitude
+
+            var locationtwo = Location("")
+            locationtwo.latitude = dropOffLatLng.latitude
+            locationtwo.longitude = dropOffLatLng.longitude
+
+            return location.distanceTo(locationtwo)
+        }
+
+        fun verifyAvailableNetwork(activity: AppCompatActivity):Boolean{
+            val connectivityManager=activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val networkInfo=connectivityManager.activeNetworkInfo
+            return  networkInfo!=null && networkInfo.isConnected
         }
     }
 }
