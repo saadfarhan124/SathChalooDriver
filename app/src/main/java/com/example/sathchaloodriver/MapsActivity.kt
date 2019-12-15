@@ -8,6 +8,7 @@ import android.location.LocationListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import com.google.maps.android.PolyUtil
 import org.jetbrains.anko.async
@@ -47,6 +48,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
     private lateinit var ListDropOffLatLng: MutableList<LatLng>
 
     private lateinit var btnStartRide: Button
+    private lateinit var btnEndRide: Button
     private lateinit var marker: Marker
 
 
@@ -65,7 +67,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        AndroidThreeTen.init(this);
+        AndroidThreeTen.init(this)
         getLocationPermission()
         init()
         loadroutes()
@@ -77,13 +79,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
 
         ListPickUpLatLng = mutableListOf<LatLng>()
         ListDropOffLatLng = mutableListOf<LatLng>()
+        btnEndRide = findViewById(R.id.btnEndRide)
         btnStartRide = findViewById(R.id.btnStartRide)
         btnStartRide.setOnClickListener {
             moveCamera(
                 LatLng(marker.position.latitude, marker.position.longitude),
                 Util.getBiggerZoomValue()
             )
+            btnStartRide.visibility = View.INVISIBLE
+            btnEndRide.visibility = View.VISIBLE
         }
+
     }
 
     private fun loadroutes() {

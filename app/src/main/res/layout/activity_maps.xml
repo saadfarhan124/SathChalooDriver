@@ -29,6 +29,25 @@
             app:layout_constraintStart_toStartOf="@+id/map" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/map" android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"/>
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEndRide"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:text="End Ride"
+            android:enabled="false"
+            android:visibility="invisible"
+            android:textSize="16sp"
+            app:cornerRadius="12dp"
+            android:textColor="@color/colorPrimary"
+            android:backgroundTint="@color/colorAccent"
+            style="@style/Widget.MaterialComponents.Button"
+            app:layout_constraintEnd_toEndOf="@+id/map"
+            app:layout_constraintStart_toStartOf="@+id/map" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/map" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
           <!--xmlns:tools="http://schemas.android.com/tools"-->
