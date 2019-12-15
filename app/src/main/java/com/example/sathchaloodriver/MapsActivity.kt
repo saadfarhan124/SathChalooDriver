@@ -19,6 +19,7 @@ import com.example.sathchaloodriver.Utilities.Util
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.firebase.firestore.GeoPoint
+import com.jakewharton.threetenabp.AndroidThreeTen
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
@@ -58,9 +59,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        AndroidThreeTen.init(this);
         getLocationPermission()
         init()
         loadroutes()
@@ -121,44 +125,48 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
                                     ListDropOffLatLng.add(droppOffLatLng)
                                     addMarkerPickUp(pickUpLatLng, "Pickup : ${doc["bookingMadeBy"]}")
                                     addMarkerDropOff(droppOffLatLng, "Dropoff : ${doc["bookingMadeBy"]}")
-                                    moveCamera(pickUpLatLng, Util.getZoomValue())
-                                    val url = Util.getURL(
-                                        startingPointLatLng,
-                                        endingPointLatLng,
-                                        getString(R.string.google_maps_key),
-                                        ListPickUpLatLng,
-                                        ListDropOffLatLng
-                                    )
-                                    async {
-                                        val result = URL(url).readText()
-                                        uiThread {
-                                            val response = JSONObject(result)
-                                            Log.d("Billie", response.toString())
-                                            val routes: JSONArray = response.getJSONArray("routes")
-                                            val routesObject = routes.getJSONObject(0)
-                                            val polylines = routesObject.getJSONObject("overview_polyline")
-                                            val encodedString = polylines.getString("points")
-                                            val bounds = LatLngBounds.Builder().include(
-                                                LatLng(startingPoint.latitude, startingPoint.longitude)
-                                            ).include(LatLng(endingPoint.latitude, endingPoint.longitude))
-                                                .include(pickUpLatLng)
-                                                .include(droppOffLatLng)
-                                            mMap.animateCamera(
-                                                CameraUpdateFactory.newLatLngBounds(
-                                                    bounds.build(),
-                                                    180
+                                    if(ListDropOffLatLng.size > 0){
+                                        val url = Util.getURL(
+                                            startingPointLatLng,
+                                            endingPointLatLng,
+                                            getString(R.string.google_maps_key),
+                                            ListPickUpLatLng,
+                                            ListDropOffLatLng
+                                        )
+                                        async {
+                                            val result = URL(url).readText()
+                                            uiThread {
+                                                val response = JSONObject(result)
+                                                Log.d("Billie", response.toString())
+                                                val routes: JSONArray = response.getJSONArray("routes")
+                                                val routesObject = routes.getJSONObject(0)
+                                                val polylines = routesObject.getJSONObject("overview_polyline")
+                                                val encodedString = polylines.getString("points")
+                                                val bounds = LatLngBounds.Builder().include(
+                                                    LatLng(startingPoint.latitude, startingPoint.longitude)
+                                                ).include(LatLng(endingPoint.latitude, endingPoint.longitude))
+                                                    .include(pickUpLatLng)
+                                                    .include(droppOffLatLng)
+                                                mMap.animateCamera(
+                                                    CameraUpdateFactory.newLatLngBounds(
+                                                        bounds.build(),
+                                                        180
+                                                    )
                                                 )
-                                            )
-                                            mMap.addPolyline(
-                                                PolylineOptions().addAll(PolyUtil.decode(encodedString)).color(
-                                                    Color.BLUE
+                                                mMap.addPolyline(
+                                                    PolylineOptions().addAll(PolyUtil.decode(encodedString)).color(
+                                                        Color.BLUE
+                                                    )
                                                 )
-                                            )
 
+                                            }
                                         }
+                                    }else{
+                                        Toast.makeText(applicationContext, "No bookings found", Toast.LENGTH_SHORT).show()
                                     }
+
                                 }
-//                                Log.d("SAAAAAD", ListPickUpLatLng[0].toString())
+//
                             }
                         }
                 } else {

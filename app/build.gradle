@@ -46,4 +46,8 @@ dependencies {
     //Map Utils
     implementation 'com.google.maps.android:android-maps-utils:0.5'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
+
+    //support date time below api level 26
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
+
 }
