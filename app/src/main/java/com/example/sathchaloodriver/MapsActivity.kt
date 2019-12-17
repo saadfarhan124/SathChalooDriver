@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.sathchaloodriver.Utilities.Util
+import com.example.sathchaloodriver.dataModels.Booking
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.firebase.firestore.GeoPoint
@@ -55,6 +56,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
     private lateinit var mMap: GoogleMap
     private lateinit var ListPickUpLatLng: MutableList<LatLng>
     private lateinit var ListDropOffLatLng: MutableList<LatLng>
+    private lateinit var listBooking: MutableList<Booking>
 
     private lateinit var btnStartRide: Button
     private lateinit var btnEndRide: Button
@@ -124,6 +126,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
             .get()
             .addOnCompleteListener { taskGetRouteId ->
                 if (taskGetRouteId.isSuccessful) {
+                    Log.d("SAAAD",taskGetRouteId.result!!.first()["routeId"].toString())
                     //get starting and ending point of route pick up and drop off
                     var startingPoint =
                         taskGetRouteId.result!!.first()["startingGeoPoint"] as GeoPoint
@@ -142,14 +145,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
 
                     //get bookings on that route for that day
                     db.collection("booking")
-                        .whereEqualTo("routeId", taskGetRouteId.result!!.first()["routeId"])
+                        .whereEqualTo("routeId", taskGetRouteId.result!!.first()["routeId"].toString())
                         .whereEqualTo("bookingDate", Util.getFormattedDate())
                         .get()
                         .addOnCompleteListener { taskGetBookingsAccordingToRouteIdAndCurrentDay ->
-                            Log.d(
-                                "SAAAAAD",
-                                taskGetBookingsAccordingToRouteIdAndCurrentDay.result.toString()
-                            )
                             if (taskGetBookingsAccordingToRouteIdAndCurrentDay.isSuccessful) {
                                 for (doc in taskGetBookingsAccordingToRouteIdAndCurrentDay.result!!) {
                                     var pickUpLatLng = LatLng(
@@ -162,6 +161,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
                                     )
                                     ListPickUpLatLng.add(pickUpLatLng)
                                     ListDropOffLatLng.add(droppOffLatLng)
+                                    val booking = doc.toObject(Booking::class.java)
+                                    listBooking.add(booking)
                                     addMarkerPickUp(
                                         pickUpLatLng,
                                         "Pickup : ${doc["bookingMadeBy"]}"
@@ -229,7 +230,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
                                     }
 
                                 }
-//
                             }
                         }
                 } else {
