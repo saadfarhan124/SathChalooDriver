@@ -15,7 +15,7 @@ class Booking : Serializable {
     var bookingDate:String? = null
     var bookingMadeBy:String? = null
     var totalFare:Long = 0
-
+    var rideStatus:Boolean = false
 
     //Stop Details
     var pickupLat:Double? =null

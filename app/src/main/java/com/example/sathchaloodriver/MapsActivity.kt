@@ -2,15 +2,18 @@ package com.example.sathchaloodriver
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
+import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import com.google.maps.android.PolyUtil
 import org.jetbrains.anko.async
 import org.jetbrains.anko.uiThread
@@ -31,6 +34,7 @@ import java.net.URL
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
 
     override fun onLocationChanged(location: Location?) {
+
         moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
         if (Util.getDistance(
                 LatLng(location!!.latitude, location!!.longitude),
@@ -39,6 +43,49 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
         ) {
             btnEndRide.enabled = true
         }
+        for (booking in listBooking) {
+            if (Util.getDistance(
+                    LatLng(location!!.latitude, location!!.longitude),
+                    LatLng(booking.pickupLat!!, booking.pickupLong!!)
+                ) < 200
+            ) {
+                val confirmDialog =
+                    AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
+                confirmDialog.setTitle("Sath Chaloo")
+                confirmDialog.setMessage("Pick up  ${booking.bookingMadeBy}")
+                confirmDialog.setPositiveButton("Pick up") { _, _ ->
+
+                }
+                confirmDialog.show()
+            } else if (Util.getDistance(
+                    LatLng(location!!.latitude, location!!.longitude),
+                    LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
+                ) < 200
+            ) {
+                val confirmDialog =
+                    AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
+                confirmDialog.setTitle("Sath Chaloo")
+                confirmDialog.setMessage("Drop off  ${booking.bookingMadeBy}, Total expense : ${booking.totalFare}")
+                confirmDialog.setPositiveButton("End ride") { _, _ ->
+                    booking.rideStatus = true
+                    var db = Util.getFireStoreInstance()
+                    db.collection("booking")
+                        .document(booking.bookingId.toString())
+                        .set(booking)
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Ride ended successfully",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                }
+                confirmDialog.show()
+            }
+        }
+
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -54,12 +101,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
     }
 
     private lateinit var mMap: GoogleMap
+    private lateinit var locationManager: LocationManager
+
     private lateinit var ListPickUpLatLng: MutableList<LatLng>
     private lateinit var ListDropOffLatLng: MutableList<LatLng>
     private lateinit var listBooking: MutableList<Booking>
 
     private lateinit var btnStartRide: Button
     private lateinit var btnEndRide: Button
+    private lateinit var progressBar: ProgressBar
     private lateinit var marker: Marker
 
     private lateinit var startingPointLatLng: LatLng
@@ -86,6 +136,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
             getLocationPermission()
             init()
             loadroutes()
+
         } else {
             val confirmDialog =
                 AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
@@ -96,15 +147,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
                 System.exit(0)
             }
             confirmDialog.show()
-
         }
     }
 
 
     private fun init() {
 
-        ListPickUpLatLng = mutableListOf<LatLng>()
-        ListDropOffLatLng = mutableListOf<LatLng>()
+        ListPickUpLatLng = mutableListOf()
+        ListDropOffLatLng = mutableListOf()
+        listBooking = mutableListOf()
+        progressBar = findViewById(R.id.progressBar)
         btnEndRide = findViewById(R.id.btnEndRide)
         btnStartRide = findViewById(R.id.btnStartRide)
         btnStartRide.setOnClickListener {
@@ -115,6 +167,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
             btnStartRide.visibility = View.INVISIBLE
             btnEndRide.visibility = View.VISIBLE
         }
+        btnEndRide.setOnClickListener {
+            val confirmDialog =
+                AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
+            confirmDialog.setTitle("Sath Chaloo")
+            confirmDialog.setMessage("Finish ride")
+            confirmDialog.setPositiveButton("Ok") { _, _ ->
+
+            }
+            confirmDialog.show()
+        }
+
+        locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        try {
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                3000,
+                10f,
+                this
+            )
+        } catch (e: SecurityException) {
+
+        }
+
 
     }
 
@@ -126,7 +201,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
             .get()
             .addOnCompleteListener { taskGetRouteId ->
                 if (taskGetRouteId.isSuccessful) {
-                    Log.d("SAAAD",taskGetRouteId.result!!.first()["routeId"].toString())
+                    Log.d("SAAAD", taskGetRouteId.result!!.first()["routeId"].toString())
                     //get starting and ending point of route pick up and drop off
                     var startingPoint =
                         taskGetRouteId.result!!.first()["startingGeoPoint"] as GeoPoint
@@ -145,7 +220,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
 
                     //get bookings on that route for that day
                     db.collection("booking")
-                        .whereEqualTo("routeId", taskGetRouteId.result!!.first()["routeId"].toString())
+                        .whereEqualTo(
+                            "routeId",
+                            taskGetRouteId.result!!.first()["routeId"].toString()
+                        )
                         .whereEqualTo("bookingDate", Util.getFormattedDate())
                         .get()
                         .addOnCompleteListener { taskGetBookingsAccordingToRouteIdAndCurrentDay ->
@@ -218,6 +296,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
                                                         Color.BLUE
                                                     )
                                                 )
+                                                progressBar.visibility = View.INVISIBLE
 
                                             }
                                         }
