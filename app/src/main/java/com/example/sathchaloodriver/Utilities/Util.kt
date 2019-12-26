@@ -2,11 +2,19 @@ package com.example.sathchaloodriver.Utilities
 
 
 import android.content.Context
+import android.content.Intent
 import android.location.Location
+import android.location.LocationManager
 import android.net.ConnectivityManager
+import android.provider.Settings
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.core.content.ContextCompat.startActivity
+import com.example.sathchaloodriver.R
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
+import org.jetbrains.anko.AlertDialogBuilder
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -84,6 +92,16 @@ class Util {
             val connectivityManager=activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo=connectivityManager.activeNetworkInfo
             return  networkInfo!=null && networkInfo.isConnected
+        }
+
+        fun isGPSEnable(locationManager: LocationManager): Boolean{
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        }
+
+        fun getAlertDialog(context: Context): AlertDialog.Builder{
+            val alertDialog = AlertDialog.Builder(context, R.style.ThemeOverlay_MaterialComponents_Dialog)
+            alertDialog.setTitle("Sath Chaloo")
+            return alertDialog
         }
     }
 }

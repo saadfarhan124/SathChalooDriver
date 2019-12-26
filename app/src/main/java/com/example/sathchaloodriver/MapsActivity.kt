@@ -3,6 +3,7 @@ package com.example.sathchaloodriver
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -10,6 +11,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -26,6 +28,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.firebase.firestore.GeoPoint
 import com.jakewharton.threetenabp.AndroidThreeTen
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.enabled
 import org.json.JSONArray
 import org.json.JSONObject
@@ -33,72 +36,6 @@ import java.net.URL
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
 
-    override fun onLocationChanged(location: Location?) {
-
-        moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
-        if (Util.getDistance(
-                LatLng(location!!.latitude, location!!.longitude),
-                endingPointLatLng
-            ) < 1000
-        ) {
-            btnEndRide.enabled = true
-        }
-        for (booking in listBooking) {
-            if (Util.getDistance(
-                    LatLng(location!!.latitude, location!!.longitude),
-                    LatLng(booking.pickupLat!!, booking.pickupLong!!)
-                ) < 200
-            ) {
-                val confirmDialog =
-                    AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
-                confirmDialog.setTitle("Sath Chaloo")
-                confirmDialog.setMessage("Pick up  ${booking.bookingMadeBy}")
-                confirmDialog.setPositiveButton("Pick up") { _, _ ->
-
-                }
-                confirmDialog.show()
-            } else if (Util.getDistance(
-                    LatLng(location!!.latitude, location!!.longitude),
-                    LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
-                ) < 200
-            ) {
-                val confirmDialog =
-                    AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
-                confirmDialog.setTitle("Sath Chaloo")
-                confirmDialog.setMessage("Drop off  ${booking.bookingMadeBy}, Total expense : ${booking.totalFare}")
-                confirmDialog.setPositiveButton("End ride") { _, _ ->
-                    booking.rideStatus = true
-                    var db = Util.getFireStoreInstance()
-                    db.collection("booking")
-                        .document(booking.bookingId.toString())
-                        .set(booking)
-                        .addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Ride ended successfully",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                        }
-                }
-                confirmDialog.show()
-            }
-        }
-
-    }
-
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onProviderEnabled(provider: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onProviderDisabled(provider: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     private lateinit var mMap: GoogleMap
     private lateinit var locationManager: LocationManager
@@ -122,6 +59,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
 
     //Permission Flag
     private var permissionFlag = false
+
+    private var TAG = "DISCOSAAD"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -179,14 +118,30 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
         }
 
         locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        try {
-            locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                3000,
-                10f,
-                this
-            )
-        } catch (e: SecurityException) {
+        Log.d(TAG, Util.isGPSEnable(locationManager).toString())
+        if (Util.isGPSEnable(locationManager)) {
+            try {
+                locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    3000,
+                    10f,
+                    this
+                )
+            } catch (e: SecurityException) {
+
+            }
+        } else {
+            val alertDialog = Util.getAlertDialog(this)
+            alertDialog.setMessage("Location need to be opened to use this application. Would you like to proceed?")
+            alertDialog.setPositiveButton("Ok"){ _, _ ->
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+            }
+            alertDialog.setNegativeButton("No"){_, _ ->
+                finishAndRemoveTask()
+                System.exit(0)
+            }
+            alertDialog.show()
 
         }
 
@@ -201,7 +156,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
             .get()
             .addOnCompleteListener { taskGetRouteId ->
                 if (taskGetRouteId.isSuccessful) {
-                    Log.d("SAAAD", taskGetRouteId.result!!.first()["routeId"].toString())
                     //get starting and ending point of route pick up and drop off
                     var startingPoint =
                         taskGetRouteId.result!!.first()["startingGeoPoint"] as GeoPoint
@@ -428,5 +382,82 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
 
             }
         }
+    }
+
+    override fun onLocationChanged(location: Location?) {
+
+        moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
+        if (Util.getDistance(
+                LatLng(location!!.latitude, location!!.longitude),
+                endingPointLatLng
+            ) < 1000
+        ) {
+            btnEndRide.enabled = true
+        }
+        for (booking in listBooking) {
+            if (Util.getDistance(
+                    LatLng(location!!.latitude, location!!.longitude),
+                    LatLng(booking.pickupLat!!, booking.pickupLong!!)
+                ) < 200
+            ) {
+                val confirmDialog =
+                    AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
+                confirmDialog.setTitle("Sath Chaloo")
+                confirmDialog.setMessage("Pick up  ${booking.bookingMadeBy}")
+                confirmDialog.setPositiveButton("Pick up") { _, _ ->
+
+                }
+                confirmDialog.show()
+            } else if (Util.getDistance(
+                    LatLng(location!!.latitude, location!!.longitude),
+                    LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
+                ) < 200
+            ) {
+                val confirmDialog =
+                    AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
+                confirmDialog.setTitle("Sath Chaloo")
+                confirmDialog.setMessage("Drop off  ${booking.bookingMadeBy}, Total expense : ${booking.totalFare}")
+                confirmDialog.setPositiveButton("End ride") { _, _ ->
+                    booking.rideStatus = true
+                    var db = Util.getFireStoreInstance()
+                    db.collection("booking")
+                        .document(booking.bookingId.toString())
+                        .set(booking)
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Ride ended successfully",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                }
+                confirmDialog.show()
+            }
+        }
+
+    }
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+
+    }
+
+    override fun onProviderEnabled(provider: String?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onProviderDisabled(provider: String?) {
+        val alertDialog = Util.getAlertDialog(this)
+        alertDialog.setMessage("Location need to be opened to use this application. Would you like to proceed?")
+        alertDialog.setPositiveButton("Ok"){ _, _ ->
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
+        }
+        alertDialog.setNegativeButton("No"){_, _ ->
+            finishAffinity();
+            System.exit(0)
+        }
+
     }
 }
