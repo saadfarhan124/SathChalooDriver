@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">SathChalooDriver</string>
     <string name="title_activity_maps">Sath Chaloo Driver</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_notifications">Notification</string>
+    <string name="title_Bookings">Bookings</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_wallet">Wallet</string>
 </resources>
