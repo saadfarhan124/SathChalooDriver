@@ -9,7 +9,7 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <TextView
-            android:id="@+id/textView"
+            android:id="@+id/bookingNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="72dp"
@@ -22,7 +22,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.button.MaterialButton
-            android:id="@+id/button8"
+            android:id="@+id/btnDropOff"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             app:cornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+            app:layout_constraintTop_toBottomOf="@+id/totalFareTextView" />
 
     <TextView
             android:id="@+id/textView19"
@@ -70,21 +70,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Total fears:"
+            android:text="Total Fare:"
             android:textColor="@color/colorText1"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/textView42"
             app:layout_constraintTop_toBottomOf="@+id/textView42" />
 
     <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/totalFareTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
             android:text="4"
             android:textColor="@color/colorText1"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView2"
             app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toStartOf="@+id/bookingNameTextView"
             app:layout_constraintTop_toTopOf="@+id/textView2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

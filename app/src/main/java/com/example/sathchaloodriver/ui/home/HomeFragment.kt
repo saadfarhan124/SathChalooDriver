@@ -419,7 +419,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     dialog.dismiss()
                 }
                 view.findViewById<TextView>(R.id.bookingNameTextView).text = booking.bookingMadeBy
-                view.findViewById<TextView>(R.id.noOfSeatsTextView).text = booking.numberOfSeats.toString()
+                view.findViewById<TextView>(R.id.noOfSeatsTextView).text =
+                    booking.numberOfSeats.toString()
                 dialog.setContentView(view)
                 dialog.show()
 
@@ -428,18 +429,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
                 ) < 200 && booking.rideStatus == "pickedUp"
             ) {
-
-                val confirmDialog =
-                    AlertDialog.Builder(
-                        root.context,
-                        R.style.ThemeOverlay_MaterialComponents_Dialog
-                    )
-                confirmDialog.setTitle("Sath Chaloo")
-                confirmDialog.setMessage("Drop off  ${booking.bookingMadeBy}, Total expense : ${booking.totalFare}")
-                confirmDialog.setPositiveButton("End ride") { _, _ ->
+                val view = layoutInflater.inflate(R.layout.activity_dropoff_bottomsheet, null)
+                val dialog = BottomSheetDialog(root.context)
+                view.findViewById<Button>(R.id.btnDropOff).onClick {
                     booking.rideStatus = "completed"
-                    var db = Util.getFireStoreInstance()
-                    db.collection("booking")
+                    Util.getFireStoreInstance().collection("booking")
                         .document(booking.bookingId.toString())
                         .set(booking)
                         .addOnCompleteListener {
@@ -451,8 +445,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                                 ).show()
                             }
                         }
+                    dialog.dismiss()
                 }
-                confirmDialog.show()
+                view.findViewById<TextView>(R.id.bookingNameTextView).text = booking.bookingMadeBy
+                view.findViewById<TextView>(R.id.totalFareTextView).text =
+                    booking.totalFare.toString()
+                dialog.setContentView(view)
+                dialog.show()
             }
         }
 
@@ -463,7 +462,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     override fun onProviderEnabled(provider: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onProviderDisabled(provider: String?) {
