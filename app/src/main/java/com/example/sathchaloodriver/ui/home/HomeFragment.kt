@@ -21,30 +21,24 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import com.example.prototype.dataModels.Booking
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.Utilities.Util
-import com.example.sathchaloodriver.dataModels.Booking
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.PolyUtil
 import com.jakewharton.threetenabp.AndroidThreeTen
-import kotlinx.android.synthetic.main.fragment_home.*
-import org.jetbrains.anko.async
-import org.jetbrains.anko.enabled
-import org.jetbrains.anko.uiThread
+import org.jetbrains.anko.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
 
 class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
-private var btn:Button?= null
+    private var btn: Button? = null
     private lateinit var mMap: GoogleMap
     private lateinit var locationManager: LocationManager
 
@@ -68,32 +62,20 @@ private var btn:Button?= null
     //Permission Flag
     private var permissionFlag = false
 
-    private var TAG = "DISCOSAAD"
-    private lateinit var root:View
+    private lateinit var root: View
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-         root = inflater.inflate(R.layout.fragment_home, container, false)
-//        btn = root.findViewById(R.id.button)
-//        btn!!.setOnClickListener {
-//            val view = layoutInflater.inflate(R.layout.activity_pickup_bottomsheet, null)
-//            val dialog = BottomSheetDialog(root.context)
-//            dialog.setContentView(view)
-//            dialog.show()
-//        }
-
-        val mapFragment = childFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        root = inflater.inflate(R.layout.fragment_home, container, false)
 
         if (Util.verifyAvailableNetwork(activity!! as AppCompatActivity)) {
             AndroidThreeTen.init(this.activity)
             getLocationPermission()
             init()
-            Log.d("dragon",Util.getFormattedDate())
+            Log.d("dragon", Util.getFormattedDate())
             loadroutes()
 
         } else {
@@ -117,7 +99,7 @@ private var btn:Button?= null
         ListPickUpLatLng = mutableListOf()
         ListDropOffLatLng = mutableListOf()
         listBooking = mutableListOf()
-        progressBar =root.findViewById(R.id.progressBar)
+        progressBar = root.findViewById(R.id.progressBar)
         btnEndRide = root.findViewById(R.id.btnEndRide)
         btnStartRide = root.findViewById(R.id.btnStartRide)
         btnStartRide.setOnClickListener {
@@ -128,6 +110,7 @@ private var btn:Button?= null
             btnStartRide.visibility = View.INVISIBLE
             btnEndRide.visibility = View.VISIBLE
         }
+
         btnEndRide.setOnClickListener {
             val confirmDialog =
                 AlertDialog.Builder(root.context, R.style.ThemeOverlay_MaterialComponents_Dialog)
@@ -138,9 +121,11 @@ private var btn:Button?= null
             }
             confirmDialog.show()
         }
+        val mapFragment = childFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         locationManager = root.context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        Log.d(TAG, Util.isGPSEnable(locationManager).toString())
         if (Util.isGPSEnable(locationManager)) {
             try {
                 locationManager.requestLocationUpdates(
@@ -155,11 +140,11 @@ private var btn:Button?= null
         } else {
             val alertDialog = Util.getAlertDialog(root.context)
             alertDialog.setMessage("Location need to be opened to use this application. Would you like to proceed?")
-            alertDialog.setPositiveButton("Ok"){ _, _ ->
+            alertDialog.setPositiveButton("Ok") { _, _ ->
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             }
-            alertDialog.setNegativeButton("No"){_, _ ->
+            alertDialog.setNegativeButton("No") { _, _ ->
                 activity!!.finishAndRemoveTask()
                 System.exit(0)
             }
@@ -382,7 +367,11 @@ private var btn:Button?= null
                 )
             }
         } else {
-            ActivityCompat.requestPermissions(activity!!, permissions, Util.getLocationPermissionCode())
+            ActivityCompat.requestPermissions(
+                activity!!,
+                permissions,
+                Util.getLocationPermissionCode()
+            )
         }
     }
 
@@ -420,27 +409,35 @@ private var btn:Button?= null
             if (Util.getDistance(
                     LatLng(location!!.latitude, location!!.longitude),
                     LatLng(booking.pickupLat!!, booking.pickupLong!!)
-                ) < 200
+                ) < 200 && booking.rideStatus == "booked"
             ) {
-                val confirmDialog =
-                    AlertDialog.Builder(root.context, R.style.ThemeOverlay_MaterialComponents_Dialog)
-                confirmDialog.setTitle("Sath Chaloo")
-                confirmDialog.setMessage("Pick up  ${booking.bookingMadeBy}")
-                confirmDialog.setPositiveButton("Pick up") { _, _ ->
 
+                val view = layoutInflater.inflate(R.layout.activity_pickup_bottomsheet, null)
+                val dialog = BottomSheetDialog(root.context)
+                view.findViewById<Button>(R.id.btnPickUp).onClick {
+                    booking.rideStatus = "pickedUp"
+                    dialog.dismiss()
                 }
-                confirmDialog.show()
+                view.findViewById<TextView>(R.id.bookingNameTextView).text = booking.bookingMadeBy
+                view.findViewById<TextView>(R.id.noOfSeatsTextView).text = booking.numberOfSeats.toString()
+                dialog.setContentView(view)
+                dialog.show()
+
             } else if (Util.getDistance(
                     LatLng(location!!.latitude, location!!.longitude),
                     LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
-                ) < 200
+                ) < 200 && booking.rideStatus == "pickedUp"
             ) {
+
                 val confirmDialog =
-                    AlertDialog.Builder(root.context, R.style.ThemeOverlay_MaterialComponents_Dialog)
+                    AlertDialog.Builder(
+                        root.context,
+                        R.style.ThemeOverlay_MaterialComponents_Dialog
+                    )
                 confirmDialog.setTitle("Sath Chaloo")
                 confirmDialog.setMessage("Drop off  ${booking.bookingMadeBy}, Total expense : ${booking.totalFare}")
                 confirmDialog.setPositiveButton("End ride") { _, _ ->
-                    booking.rideStatus = true
+                    booking.rideStatus = "completed"
                     var db = Util.getFireStoreInstance()
                     db.collection("booking")
                         .document(booking.bookingId.toString())
@@ -472,11 +469,11 @@ private var btn:Button?= null
     override fun onProviderDisabled(provider: String?) {
         val alertDialog = Util.getAlertDialog(root.context)
         alertDialog.setMessage("Location need to be opened to use this application. Would you like to proceed?")
-        alertDialog.setPositiveButton("Ok"){ _, _ ->
+        alertDialog.setPositiveButton("Ok") { _, _ ->
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(intent)
         }
-        alertDialog.setNegativeButton("No"){_, _ ->
+        alertDialog.setNegativeButton("No") { _, _ ->
             activity!!.finishAffinity();
             System.exit(0)
         }
