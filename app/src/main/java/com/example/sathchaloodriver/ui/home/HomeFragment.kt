@@ -29,6 +29,7 @@ import com.example.sathchaloodriver.Utilities.Util
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.PolyUtil
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -53,6 +54,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     private lateinit var startingPointLatLng: LatLng
     private lateinit var endingPointLatLng: LatLng
+
+    //Variable to save document ID
+    private lateinit var driverDocumentRef:DocumentReference
 
 
     //Permission Vars
@@ -93,9 +97,25 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         return root
     }
 
+    private fun updateLocationInDb(location: Location?){
+        if(location != null){
+            driverDocumentRef
+                .update("driver_location" , GeoPoint(location.latitude, location.longitude))
+        }
+    }
+
+    private fun getDocumentId(){
+        Util.getFireStoreInstance().collection("driver_routes")
+            .get()
+            .addOnSuccessListener {
+                driverDocumentRef = Util.getFireStoreInstance().collection("driver_routes")
+                    .document(it.first().id)
+            }
+    }
 
     private fun init() {
 
+        getDocumentId()
         ListPickUpLatLng = mutableListOf()
         ListDropOffLatLng = mutableListOf()
         listBooking = mutableListOf()
@@ -107,6 +127,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 LatLng(marker.position.latitude, marker.position.longitude),
                 Util.getBiggerZoomValue()
             )
+            //Updating booking status
+            driverDocumentRef.update("rideStatus", "started")
             btnStartRide.visibility = View.INVISIBLE
             btnEndRide.visibility = View.VISIBLE
         }
@@ -130,7 +152,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             try {
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    3000,
+                    15000,
                     10f,
                     this
                 )
@@ -397,6 +419,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     override fun onLocationChanged(location: Location?) {
 
+        updateLocationInDb(location)
         moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
         if (Util.getDistance(
                 LatLng(location!!.latitude, location!!.longitude),
@@ -478,4 +501,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
 
     }
+
+
 }
