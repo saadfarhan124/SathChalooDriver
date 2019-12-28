@@ -11,9 +11,10 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MapsActivity"
-            tools:layout_editor_absoluteX="132dp"
-            tools:layout_editor_absoluteY="-261dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".MapsActivity" />
 
     <com.google.android.material.button.MaterialButton
             android:id="@+id/btnStartRide"

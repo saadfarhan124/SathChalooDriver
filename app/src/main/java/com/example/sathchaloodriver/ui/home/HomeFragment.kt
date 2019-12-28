@@ -19,6 +19,7 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.content.ContextCompat
@@ -75,7 +76,7 @@ private var btn:Button?= null
         savedInstanceState: Bundle?
     ): View? {
 
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+         root = inflater.inflate(R.layout.fragment_home, container, false)
 //        btn = root.findViewById(R.id.button)
 //        btn!!.setOnClickListener {
 //            val view = layoutInflater.inflate(R.layout.activity_pickup_bottomsheet, null)
@@ -88,19 +89,20 @@ private var btn:Button?= null
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        if (Util.verifyAvailableNetwork(this)) {
-            AndroidThreeTen.init(this)
+        if (Util.verifyAvailableNetwork(activity!! as AppCompatActivity)) {
+            AndroidThreeTen.init(this.activity)
             getLocationPermission()
             init()
+            Log.d("dragon",Util.getFormattedDate())
             loadroutes()
 
         } else {
             val confirmDialog =
-                AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
+                AlertDialog.Builder(root.context, R.style.ThemeOverlay_MaterialComponents_Dialog)
             confirmDialog.setTitle("Sath Chaloo")
             confirmDialog.setMessage("Please connect to internet")
             confirmDialog.setPositiveButton("Ok") { _, _ ->
-                finishAffinity();
+                activity!!.finishAffinity();
                 System.exit(0)
             }
             confirmDialog.show()
@@ -128,7 +130,7 @@ private var btn:Button?= null
         }
         btnEndRide.setOnClickListener {
             val confirmDialog =
-                AlertDialog.Builder(this, R.style.ThemeOverlay_MaterialComponents_Dialog)
+                AlertDialog.Builder(root.context, R.style.ThemeOverlay_MaterialComponents_Dialog)
             confirmDialog.setTitle("Sath Chaloo")
             confirmDialog.setMessage("Finish ride")
             confirmDialog.setPositiveButton("Ok") { _, _ ->
@@ -137,7 +139,7 @@ private var btn:Button?= null
             confirmDialog.show()
         }
 
-        locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager = root.context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         Log.d(TAG, Util.isGPSEnable(locationManager).toString())
         if (Util.isGPSEnable(locationManager)) {
             try {
@@ -151,14 +153,14 @@ private var btn:Button?= null
 
             }
         } else {
-            val alertDialog = Util.getAlertDialog(this)
+            val alertDialog = Util.getAlertDialog(root.context)
             alertDialog.setMessage("Location need to be opened to use this application. Would you like to proceed?")
             alertDialog.setPositiveButton("Ok"){ _, _ ->
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             }
             alertDialog.setNegativeButton("No"){_, _ ->
-                finishAndRemoveTask()
+                activity!!.finishAndRemoveTask()
                 System.exit(0)
             }
             alertDialog.show()
@@ -276,7 +278,7 @@ private var btn:Button?= null
                                         }
                                     } else {
                                         Toast.makeText(
-                                            applicationContext,
+                                            root.context,
                                             "No bookings found",
                                             Toast.LENGTH_SHORT
                                         ).show()
@@ -298,7 +300,7 @@ private var btn:Button?= null
 
 
     override fun onMapReady(googleMap: GoogleMap) {
-        MapsInitializer.initialize(applicationContext)
+        MapsInitializer.initialize(root.context)
         mMap = googleMap
         if (permissionFlag) {
             try {
@@ -374,13 +376,13 @@ private var btn:Button?= null
                 permissionFlag = true
             } else {
                 ActivityCompat.requestPermissions(
-                    this!!,
+                    activity!!,
                     permissions,
                     Util.getLocationPermissionCode()
                 )
             }
         } else {
-            ActivityCompat.requestPermissions(this!!, permissions, Util.getLocationPermissionCode())
+            ActivityCompat.requestPermissions(activity!!, permissions, Util.getLocationPermissionCode())
         }
     }
 
@@ -475,7 +477,7 @@ private var btn:Button?= null
             startActivity(intent)
         }
         alertDialog.setNegativeButton("No"){_, _ ->
-            finishAffinity();
+            activity!!.finishAffinity();
             System.exit(0)
         }
 
