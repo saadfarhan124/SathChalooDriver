@@ -11,6 +11,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.*
+import androidx.preference.PreferenceManager
 import com.example.sathchaloodriver.Utilities.Util
 import com.google.firebase.auth.UserProfileChangeRequest
 import org.jetbrains.anko.onClick
@@ -66,23 +67,21 @@ class LoginActivity : AppCompatActivity() {
                         else {
 //                            if (Util.getFirebaseAuth().currentUser!!.displayName.isNullOrEmpty()) {
                                 //Updating user display name if not present
-
                                 val profileUpdates = UserProfileChangeRequest.Builder()
                                     .setDisplayName(driverData.data!!["name"].toString())
                                     .build()
                                 Util.getFirebaseAuth().currentUser!!.updateProfile(profileUpdates)
                                     .addOnSuccessListener {
-                                        with(getPreferences(Context.MODE_PRIVATE).edit()){
+                                        PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                                            .edit()
+                                            .putString("contactNumber", driverData.data!!["contactNumber"].toString())
+                                            .apply()
                                             Log.d("DADADASD",driverData.data!!["contactNumber"].toString())
-                                            putString("contactNumber", driverData.data!!["contactNumber"].toString())
-                                            commit()
                                             Util.getGlobals().user = Util.getFirebaseAuth().currentUser
                                             val intent =
                                                 Intent(applicationContext, MainActivity::class.java)
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                             loginProgress.visibility = View.INVISIBLE
                                             startActivity(intent)
-                                        }
                                     }
 //                            } else {
 //                                Util.getGlobals().user = Util.getFirebaseAuth().currentUser

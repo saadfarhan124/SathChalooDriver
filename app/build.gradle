@@ -59,4 +59,8 @@ dependencies {
     //Profile image
     implementation 'com.mikhaellopez:circularimageview:3.2.0'
 
+    //Preference manager
+    implementation "androidx.preference:preference-ktx:1.1.0"
+
+
 }

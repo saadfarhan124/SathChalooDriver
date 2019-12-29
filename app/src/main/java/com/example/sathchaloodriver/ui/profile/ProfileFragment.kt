@@ -12,9 +12,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.Utilities.Util
 import com.google.android.material.card.MaterialCardView
+import org.jetbrains.anko.defaultSharedPreferences
 
 
 class ProfileFragment: Fragment(){
@@ -78,7 +80,7 @@ class ProfileFragment: Fragment(){
 
         //contact number
         driverNumberTextView = root.findViewById(R.id.driverNumberTextView)
-        driverNumberTextView.text = activity!!.getPreferences(Context.MODE_PRIVATE)
+        driverNumberTextView.text = PreferenceManager.getDefaultSharedPreferences(root.context)
             .getString("contactNumber", "")
 
         //logout
