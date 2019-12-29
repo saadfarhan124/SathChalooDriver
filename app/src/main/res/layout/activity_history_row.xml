@@ -14,55 +14,109 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="400dp">
+            android:layout_height="wrap_content">
 
         <TextView
                 android:id="@+id/textView12"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Pick up: "
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="56dp" />
+                app:layout_constraintStart_toStartOf="@+id/textView52"
+                app:layout_constraintTop_toBottomOf="@+id/textView52" />
 
         <TextView
                 android:id="@+id/textView18"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Drop off: "
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="94dp" />
+                app:layout_constraintStart_toStartOf="@+id/textView12"
+                app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
         <TextView
                 android:id="@+id/textView20"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_italic"
-                android:text="Drop off: "
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Total fair: "
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="125dp" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView18"
+                app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
         <TextView
                 android:id="@+id/textView52"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Name: "
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="16dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+                android:id="@+id/textView21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto"
+                android:text="umer jawed"
+                android:textColor="@color/colorText1"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView52"
+                app:layout_constraintStart_toEndOf="@+id/textView52" />
+
+        <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto"
+                android:text="TextView"
+                android:textColor="@color/colorText1"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView12"
+                app:layout_constraintStart_toEndOf="@+id/textView12"
+                app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+        <TextView
+                android:id="@+id/textView23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto"
+                android:text="TextView"
+                android:textColor="@color/colorText1"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView18"
+                app:layout_constraintStart_toEndOf="@+id/textView18"
+                app:layout_constraintTop_toTopOf="@+id/textView18" />
+
+        <TextView
+                android:id="@+id/textView24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto"
+                android:text="TextView"
+                android:textColor="@color/colorText1"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView20"
+                app:layout_constraintStart_toEndOf="@+id/textView20"
+                app:layout_constraintTop_toTopOf="@+id/textView20" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
