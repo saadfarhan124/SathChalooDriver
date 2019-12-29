@@ -21,7 +21,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView5">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/lg_txt_email"
+                android:id="@+id/emailTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"/>
@@ -44,7 +44,7 @@
 
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/lg_txt_password"
+                android:id="@+id/passwordTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
@@ -54,7 +54,7 @@
 
 
     <com.google.android.material.button.MaterialButton
-            android:id="@+id/login"
+            android:id="@+id/loginButton"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,9 +62,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
-            android:editable="false"
             android:enabled="true"
-            android:onClick="authenticate"
             android:paddingLeft="92dp"
             android:paddingTop="14dp"
             android:paddingRight="92dp"
@@ -77,7 +75,7 @@
             app:layout_constraintTop_toBottomOf="@+id/lg_password" />
 
     <ProgressBar
-            android:id="@+id/loading"
+            android:id="@+id/loginProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -85,6 +83,7 @@
             android:layout_marginTop="64dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="64dp"
+            android:indeterminateTint="@color/colorPrimary"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/lg_password"
@@ -115,6 +114,6 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login" />
+            app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

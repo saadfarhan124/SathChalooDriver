@@ -181,7 +181,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         var db = Util.getFireStoreInstance()
         //Retrieve route ID
         db.collection("driver_routes")
-            .whereEqualTo("driverId", Util.getDriverId())
+            .whereEqualTo("driverId", Util.getFirebaseAuth().currentUser!!.uid)
             .get()
             .addOnCompleteListener { taskGetRouteId ->
                 if (taskGetRouteId.isSuccessful) {
