@@ -5,30 +5,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-        >
-
-
-    <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbarlogin"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                android:backgroundTint="@color/colorText"
-                app:navigationIcon="@drawable/ic_chevron_left_black_24dp">
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
-
+        android:background="#000000">
     <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/lg_email"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -37,13 +14,14 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="203dp"
             android:layout_marginEnd="16dp"
+            android:background="@color/colorText"
             android:hint="Email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView5">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/lg_txt_email"
+                android:id="@+id/emailTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"/>
@@ -52,30 +30,31 @@
 
     <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/lg_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/colorPrimary"
-
+            android:background="@color/colorText"
+            android:hint="Password"
             app:layout_constraintTop_toBottomOf="@+id/lg_email"
-            android:hint="Password">
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/colorPrimary">
 
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/lg_txt_password"
+                android:id="@+id/passwordTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword"
+                />
 
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.button.MaterialButton
-            android:id="@+id/login"
+            android:id="@+id/loginButton"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,13 +62,11 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
-            android:editable="false"
             android:enabled="true"
-            android:onClick="authenticate"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
             android:paddingLeft="92dp"
+            android:paddingTop="14dp"
             android:paddingRight="92dp"
+            android:paddingBottom="14dp"
             android:text="Log in "
             android:textSize="16sp"
             app:cornerRadius="12dp"
@@ -98,7 +75,7 @@
             app:layout_constraintTop_toBottomOf="@+id/lg_password" />
 
     <ProgressBar
-            android:id="@+id/loading"
+            android:id="@+id/loginProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -106,6 +83,7 @@
             android:layout_marginTop="64dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="64dp"
+            android:indeterminateTint="@color/colorPrimary"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/lg_password"
@@ -118,11 +96,10 @@
             android:layout_width="155dp"
             android:layout_height="125dp"
             android:layout_marginTop="80dp"
+            android:src="@drawable/logo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/mob"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
             android:id="@+id/login_btn"
@@ -133,10 +110,10 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:text="Forget Password?"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login" />
+            app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
