@@ -41,6 +41,9 @@ class ProfileFragment: Fragment(){
     //logout card
     private lateinit var logoutCard: MaterialCardView
 
+    //Email card
+    private lateinit var textViewEmail:TextView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -82,6 +85,10 @@ class ProfileFragment: Fragment(){
         driverNumberTextView = root.findViewById(R.id.driverNumberTextView)
         driverNumberTextView.text = PreferenceManager.getDefaultSharedPreferences(root.context)
             .getString("contactNumber", "")
+
+        //email
+        textViewEmail = root.findViewById(R.id.txt_email)
+        textViewEmail.text = Util.getGlobals().user!!.email
 
         //logout
         logoutCard = root.findViewById(R.id.materialCardViewLogout)
