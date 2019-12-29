@@ -63,7 +63,7 @@
                             app:layout_constraintTop_toTopOf="@+id/img_num" />
 
                     <TextView
-                            android:id="@+id/txt_num"
+                            android:id="@+id/driverNumberTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"

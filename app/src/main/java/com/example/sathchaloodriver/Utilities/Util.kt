@@ -2,11 +2,13 @@ package com.example.sathchaloodriver.Utilities
 
 
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.sathchaloodriver.LoginActivity
 import com.example.sathchaloodriver.R
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.FirebaseFirestore
@@ -135,6 +137,14 @@ class Util {
         fun getStorageRef(): StorageReference {
             return FirebaseStorage.getInstance()
                 .reference.child("images/${getGlobals().user!!.uid}")
+        }
+
+        //logout utility
+        fun logout(context: Context) : Intent {
+            FirebaseAuth.getInstance().signOut()
+            var intent = Intent(context, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            return intent
         }
 
     }

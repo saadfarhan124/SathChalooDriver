@@ -1,6 +1,7 @@
 package com.example.sathchaloodriver
 
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
 import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
@@ -48,9 +49,9 @@ class LoginActivity : AppCompatActivity() {
                     .collection("drivers")
                     .document(Util.getFirebaseAuth().uid!!)
                     .get()
-                    .addOnSuccessListener {
+                    .addOnSuccessListener {driverData ->
                         //If user is not a driver
-                        if (it.data.isNullOrEmpty()) {
+                        if (driverData.data.isNullOrEmpty()) {
                             Toast.makeText(
                                 applicationContext,
                                 "Not a valid driver",
@@ -63,24 +64,30 @@ class LoginActivity : AppCompatActivity() {
                         }
                         //if the user is a driver
                         else {
-                            if (Util.getFirebaseAuth().currentUser!!.displayName.isNullOrEmpty()) {
+//                            if (Util.getFirebaseAuth().currentUser!!.displayName.isNullOrEmpty()) {
+                                //Updating user display name if not present
+
                                 val profileUpdates = UserProfileChangeRequest.Builder()
-                                    .setDisplayName(it.data!!["name"].toString())
+                                    .setDisplayName(driverData.data!!["name"].toString())
                                     .build()
                                 Util.getFirebaseAuth().currentUser!!.updateProfile(profileUpdates)
                                     .addOnSuccessListener {
-                                        Util.getGlobals().user = Util.getFirebaseAuth().currentUser
-                                        val intent =
-                                            Intent(applicationContext, MainActivity::class.java)
-                                        loginProgress.visibility = View.INVISIBLE
-                                        startActivity(intent)
+                                        with(getPreferences(Context.MODE_PRIVATE).edit()){
+                                            putString("contactNumber", driverData.data!!["contactNumber"].toString())
+                                            commit()
+                                            Util.getGlobals().user = Util.getFirebaseAuth().currentUser
+                                            val intent =
+                                                Intent(applicationContext, MainActivity::class.java)
+                                            loginProgress.visibility = View.INVISIBLE
+                                            startActivity(intent)
+                                        }
                                     }
-                            } else {
-                                Util.getGlobals().user = Util.getFirebaseAuth().currentUser
-                                val intent = Intent(applicationContext, MainActivity::class.java)
-                                loginProgress.visibility = View.INVISIBLE
-                                startActivity(intent)
-                            }
+//                            } else {
+//                                Util.getGlobals().user = Util.getFirebaseAuth().currentUser
+//                                val intent = Intent(applicationContext, MainActivity::class.java)
+//                                loginProgress.visibility = View.INVISIBLE
+//                                startActivity(intent)
+//                            }
                         }
                     }
             }.addOnFailureListener {
