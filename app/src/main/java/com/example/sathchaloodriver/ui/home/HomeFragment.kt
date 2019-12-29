@@ -79,7 +79,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             AndroidThreeTen.init(this.activity)
             getLocationPermission()
             init()
-            Log.d("dragon", Util.getFormattedDate())
             loadroutes()
 
         } else {
