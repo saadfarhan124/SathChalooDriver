@@ -13,7 +13,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_name">
+            app:layout_constraintTop_toBottomOf="@+id/userNameTextView">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -361,29 +361,8 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
-<!--    <com.google.android.material.appbar.AppBarLayout-->
-<!--            android:id="@+id/appBarLayout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:theme="@style/AppTheme.AppBarOverlay"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--                android:id="@+id/toolbarprofile"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="?attr/actionBarSize"-->
-<!--                android:background="?attr/colorPrimary"-->
-<!--                app:popupTheme="@style/AppTheme.PopupOverlay"-->
-<!--                app:titleTextColor="@color/colorText"-->
-<!--                app:title="Profile"-->
-<!--                app:navigationIcon="@drawable/ic_chevron_left_white_24dp">-->
-<!--        </androidx.appcompat.widget.Toolbar>-->
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
     <com.mikhaellopez.circularimageview.CircularImageView
-            android:id= "@+id/img_user"
+            android:id= "@+id/imageViewUserDisplay"
             android:layout_width="128dp"
             android:layout_height="120dp"
             android:layout_marginTop="8dp"
@@ -396,26 +375,10 @@
             app:civ_shadow_color="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+            
             />
-    <!--    <ImageView-->
-    <!--        android:id="@+id/img_user"-->
-    <!--        android:layout_width="88dp"-->
-    <!--        android:layout_height="88dp"-->
-    <!--        android:layout_marginTop="8dp"-->
-    <!--        android:contentDescription="@string/nav_header_desc"-->
-    <!--        android:paddingTop="@dimen/nav_header_vertical_spacing"-->
-
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"-->
-    <!--        app:srcCompat="@mipmap/ic_launcher_round" />-->
-
-
-
-
     <TextView
-            android:id="@+id/txt_name"
+            android:id="@+id/userNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -423,19 +386,19 @@
             android:textColor="@color/colorText1"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/img_user"
-            app:layout_constraintStart_toStartOf="@+id/img_user"
-            app:layout_constraintTop_toBottomOf="@+id/img_user" />
+            app:layout_constraintEnd_toEndOf="@+id/imageViewUserDisplay"
+            app:layout_constraintStart_toStartOf="@+id/imageViewUserDisplay"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewUserDisplay" />
 
     <ProgressBar
             android:id="@+id/progressBarProfile"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/img_user"
-            app:layout_constraintEnd_toEndOf="@+id/img_user"
-            app:layout_constraintStart_toStartOf="@+id/img_user"
-            app:layout_constraintTop_toTopOf="@+id/img_user"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewUserDisplay"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewUserDisplay"
+            app:layout_constraintStart_toStartOf="@+id/imageViewUserDisplay"
+            app:layout_constraintTop_toTopOf="@+id/imageViewUserDisplay"
             android:visibility="invisible"/>
 
     <ImageView
@@ -443,9 +406,9 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="2dp"
-            app:layout_constraintBottom_toBottomOf="@+id/img_user"
-            app:layout_constraintEnd_toEndOf="@+id/img_user"
-            app:layout_constraintStart_toStartOf="@+id/img_user"
-            app:layout_constraintTop_toTopOf="@+id/img_user"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewUserDisplay"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewUserDisplay"
+            app:layout_constraintStart_toStartOf="@+id/imageViewUserDisplay"
+            app:layout_constraintTop_toTopOf="@+id/imageViewUserDisplay"
             app:srcCompat="@drawable/ic_add_a_photo_black_24dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

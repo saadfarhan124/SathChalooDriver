@@ -113,7 +113,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     private fun init() {
-
         getDocumentId()
         ListPickUpLatLng = mutableListOf()
         ListDropOffLatLng = mutableListOf()

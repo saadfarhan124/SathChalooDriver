@@ -5,11 +5,13 @@ import android.content.Intent
 import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.widget.*
 import com.example.sathchaloodriver.Utilities.Util
+import com.google.firebase.auth.UserProfileChangeRequest
 import org.jetbrains.anko.onClick
 
 class LoginActivity : AppCompatActivity() {
@@ -61,16 +63,26 @@ class LoginActivity : AppCompatActivity() {
                         }
                         //if the user is a driver
                         else {
-                            Util.getGlobals().user = Util.getFirebaseAuth().currentUser
-                            val intent = Intent(applicationContext, MainActivity::class.java)
-                            startActivity(intent)
+                            if (Util.getFirebaseAuth().currentUser!!.displayName.isNullOrEmpty()) {
+                                val profileUpdates = UserProfileChangeRequest.Builder()
+                                    .setDisplayName(it.data!!["name"].toString())
+                                    .build()
+                                Util.getFirebaseAuth().currentUser!!.updateProfile(profileUpdates)
+                                    .addOnSuccessListener {
+                                        Util.getGlobals().user = Util.getFirebaseAuth().currentUser
+                                        val intent =
+                                            Intent(applicationContext, MainActivity::class.java)
+                                        loginProgress.visibility = View.INVISIBLE
+                                        startActivity(intent)
+                                    }
+                            } else {
+                                Util.getGlobals().user = Util.getFirebaseAuth().currentUser
+                                val intent = Intent(applicationContext, MainActivity::class.java)
+                                loginProgress.visibility = View.INVISIBLE
+                                startActivity(intent)
+                            }
                         }
-                        loginProgress.visibility = View.INVISIBLE
-
-
                     }
-
-
             }.addOnFailureListener {
                 Toast.makeText(applicationContext, it.message, Toast.LENGTH_LONG).show()
                 loginProgress.visibility = View.INVISIBLE

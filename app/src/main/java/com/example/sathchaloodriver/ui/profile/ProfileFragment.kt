@@ -28,6 +28,9 @@ class ProfileFragment: Fragment(){
     //display picture
     private lateinit var imageViewDisplayPicture: ImageView
 
+    //name
+    private lateinit var userNameTextView:TextView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,7 +38,6 @@ class ProfileFragment: Fragment(){
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_profile, container, false)
-
         //setting profile icons
         imageViewNumberIcon = root.findViewById(R.id.img_num)
         imageViewNumberIcon.setImageResource(R.drawable.ic_phone)
@@ -56,8 +58,15 @@ class ProfileFragment: Fragment(){
         imageViewLogoutIcon.setImageResource(R.drawable.ic_logout)
 
         //profile picture
-        imageViewDisplayPicture = root.findViewById(R.id.img_user)
+        imageViewDisplayPicture = root.findViewById(R.id.imageViewUserDisplay)
         imageViewDisplayPicture.setOnClickListener { launchGallery() }
+        if(Util.getGlobals().userImage != null){
+            imageViewDisplayPicture.setImageBitmap(Util.getGlobals().userImage)
+        }
+
+        //display name
+        userNameTextView = root.findViewById(R.id.userNameTextView)
+        userNameTextView.text = Util.getGlobals().user!!.displayName
 
         return root
     }
