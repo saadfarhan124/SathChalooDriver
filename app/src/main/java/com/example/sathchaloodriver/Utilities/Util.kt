@@ -104,5 +104,8 @@ class Util {
             return alertDialog
         }
 
+        fun getImageRequest():Int{
+            return 71
+        }
     }
 }
