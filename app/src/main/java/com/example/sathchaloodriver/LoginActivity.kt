@@ -73,11 +73,13 @@ class LoginActivity : AppCompatActivity() {
                                 Util.getFirebaseAuth().currentUser!!.updateProfile(profileUpdates)
                                     .addOnSuccessListener {
                                         with(getPreferences(Context.MODE_PRIVATE).edit()){
+                                            Log.d("DADADASD",driverData.data!!["contactNumber"].toString())
                                             putString("contactNumber", driverData.data!!["contactNumber"].toString())
                                             commit()
                                             Util.getGlobals().user = Util.getFirebaseAuth().currentUser
                                             val intent =
                                                 Intent(applicationContext, MainActivity::class.java)
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                             loginProgress.visibility = View.INVISIBLE
                                             startActivity(intent)
                                         }
