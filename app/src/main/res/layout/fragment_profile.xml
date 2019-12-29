@@ -399,6 +399,7 @@
             app:layout_constraintEnd_toEndOf="@+id/imageViewUserDisplay"
             app:layout_constraintStart_toStartOf="@+id/imageViewUserDisplay"
             app:layout_constraintTop_toTopOf="@+id/imageViewUserDisplay"
+            android:indeterminateTint="@color/colorPrimary"
             android:visibility="invisible"/>
 
     <ImageView
