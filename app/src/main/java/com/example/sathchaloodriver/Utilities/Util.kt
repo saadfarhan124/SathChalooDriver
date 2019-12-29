@@ -15,6 +15,8 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 import com.example.sathchaloodriver.Utilities.Globals.Globals
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 class Util {
     companion object {
@@ -129,6 +131,11 @@ class Util {
             return alertDialog
         }
 
+        //funtion to get storage reference for image
+        fun getStorageRef(): StorageReference {
+            return FirebaseStorage.getInstance()
+                .reference.child("images/${getGlobals().user!!.uid}")
+        }
 
     }
 }
