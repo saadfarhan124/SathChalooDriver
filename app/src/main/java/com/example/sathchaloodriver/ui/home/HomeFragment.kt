@@ -52,8 +52,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var progressBar: ProgressBar
     private lateinit var marker: Marker
 
-    private lateinit var startingPointLatLng: LatLng
+    private lateinit  var startingPointLatLng: LatLng
     private lateinit var endingPointLatLng: LatLng
+
+    //Flag to check if the properties been initilized
+    private var initializeFlag:Boolean = false
 
     //Variable to save document ID
     private lateinit var driverDocumentRef:DocumentReference
@@ -72,9 +75,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         root = inflater.inflate(R.layout.fragment_home, container, false)
-
         if (Util.verifyAvailableNetwork(activity!! as AppCompatActivity)) {
             AndroidThreeTen.init(this.activity)
             getLocationPermission()
@@ -191,11 +192,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                         LatLng(startingPoint.latitude, startingPoint.longitude)
                     endingPointLatLng = LatLng(endingPoint.latitude, endingPoint.longitude)
                     addMarkerEnding(
-                        endingPointLatLng
+                        endingPointLatLng!!
                         , "Ending"
                     )
                     addMarkerStarting(
-                        startingPointLatLng
+                        startingPointLatLng!!
                         , "Starting"
                     )
 
@@ -232,8 +233,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                                     )
                                     if (ListDropOffLatLng.size > 0) {
                                         val url = Util.getURL(
-                                            startingPointLatLng,
-                                            endingPointLatLng,
+                                            startingPointLatLng!!,
+                                            endingPointLatLng!!,
                                             getString(R.string.google_maps_key),
                                             ListPickUpLatLng,
                                             ListDropOffLatLng
@@ -278,6 +279,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                                                     )
                                                 )
                                                 progressBar.visibility = View.INVISIBLE
+                                                initializeFlag = true
 
                                             }
                                         }
@@ -416,66 +418,74 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     override fun onLocationChanged(location: Location?) {
-
-        updateLocationInDb(location)
-        moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
-        if (Util.getDistance(
-                LatLng(location!!.latitude, location!!.longitude),
-                endingPointLatLng
-            ) < 1000
-        ) {
-            btnEndRide.enabled = true
-        }
-        for (booking in listBooking) {
+        if(initializeFlag){
+            moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
+            updateLocationInDb(location)
             if (Util.getDistance(
                     LatLng(location!!.latitude, location!!.longitude),
-                    LatLng(booking.pickupLat!!, booking.pickupLong!!)
-                ) < 200 && booking.rideStatus == "booked"
+                    endingPointLatLng!!
+                ) < 1000
             ) {
-
-                val view = layoutInflater.inflate(R.layout.activity_pickup_bottomsheet, null)
-                val dialog = BottomSheetDialog(root.context)
-                view.findViewById<Button>(R.id.btnPickUp).onClick {
-                    booking.rideStatus = "pickedUp"
-                    dialog.dismiss()
-                }
-                view.findViewById<TextView>(R.id.bookingNameTextView).text = booking.bookingMadeBy
-                view.findViewById<TextView>(R.id.noOfSeatsTextView).text =
-                    booking.numberOfSeats.toString()
-                dialog.setContentView(view)
-                dialog.show()
-
-            } else if (Util.getDistance(
-                    LatLng(location!!.latitude, location!!.longitude),
-                    LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
-                ) < 200 && booking.rideStatus == "pickedUp"
-            ) {
-                val view = layoutInflater.inflate(R.layout.activity_dropoff_bottomsheet, null)
-                val dialog = BottomSheetDialog(root.context)
-                view.findViewById<Button>(R.id.btnDropOff).onClick {
-                    booking.rideStatus = "completed"
-                    Util.getFireStoreInstance().collection("booking")
-                        .document(booking.bookingId.toString())
-                        .set(booking)
-                        .addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                Toast.makeText(
-                                    root.context,
-                                    "Ride ended successfully",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                btnEndRide.enabled = true
+            }
+            for (booking in listBooking) {
+                if (Util.getDistance(
+                        LatLng(location!!.latitude, location!!.longitude),
+                        LatLng(booking.pickupLat!!, booking.pickupLong!!)
+                    ) < 200 && booking.rideStatus == "booked"
+                ) {
+                    //Bottom sheet
+                    val view = layoutInflater.inflate(R.layout.activity_pickup_bottomsheet, null)
+                    val dialog = BottomSheetDialog(root.context)
+                    view.findViewById<Button>(R.id.btnPickUp).onClick {
+                        //Update booking status
+                        booking.rideStatus = "pickedUp"
+                        //Updating ride status in db
+                        Util.getFireStoreInstance().collection("booking")
+                            .document(booking.bookingId.toString())
+                            .set(booking)
+                            .addOnSuccessListener {
+                                dialog.dismiss()
                             }
-                        }
-                    dialog.dismiss()
+                    }
+                    view.findViewById<TextView>(R.id.bookingNameTextView).text = booking.bookingMadeBy
+                    view.findViewById<TextView>(R.id.noOfSeatsTextView).text =
+                        booking.numberOfSeats.toString()
+                    dialog.setContentView(view)
+                    dialog.show()
+
+                } else if (Util.getDistance(
+                        LatLng(location!!.latitude, location!!.longitude),
+                        LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
+                    ) < 200 && booking.rideStatus == "pickedUp"
+                ) {
+                    val view = layoutInflater.inflate(R.layout.activity_dropoff_bottomsheet, null)
+                    val dialog = BottomSheetDialog(root.context)
+                    view.findViewById<Button>(R.id.btnDropOff).onClick {
+                        booking.rideStatus = "completed"
+                        Util.getFireStoreInstance().collection("booking")
+                            .document(booking.bookingId.toString())
+                            .set(booking)
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    Toast.makeText(
+                                        root.context,
+                                        "Ride ended successfully",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                dialog.dismiss()
+                            }
+
+                    }
+                    view.findViewById<TextView>(R.id.bookingNameTextView).text = booking.bookingMadeBy
+                    view.findViewById<TextView>(R.id.totalFareTextView).text =
+                        booking.totalFare.toString()
+                    dialog.setContentView(view)
+                    dialog.show()
                 }
-                view.findViewById<TextView>(R.id.bookingNameTextView).text = booking.bookingMadeBy
-                view.findViewById<TextView>(R.id.totalFareTextView).text =
-                    booking.totalFare.toString()
-                dialog.setContentView(view)
-                dialog.show()
             }
         }
-
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
