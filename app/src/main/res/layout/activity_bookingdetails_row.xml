@@ -45,8 +45,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
         <TextView
-                android:id="@+id/textView52"
-                android:layout_width="200dp"
+                android:id="@+id/txt_lbl_noPassemger"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/roboto"
@@ -64,7 +64,7 @@
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="@+id/textView11"
                 app:layout_constraintTop_toBottomOf="@+id/textView11"
-                app:srcCompat="@drawable/ic_panorama_fish_eye_black_24dp" />
+                app:srcCompat="@drawable/ic_panorama_fish_eye_green_24dp" />
 
         <ImageView
                 android:id="@+id/img_dropoffAddress"
@@ -74,7 +74,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/img_pickupAddress"
                 app:layout_constraintStart_toStartOf="@+id/img_pickupAddress"
                 app:layout_constraintTop_toBottomOf="@+id/divider10"
-                app:srcCompat="@drawable/ic_panorama_fish_eye_black_24dp" />
+                app:srcCompat="@drawable/ic_panorama_fish_eye_red_24dp" />
 
         <View
                 android:id="@+id/divider10"
@@ -131,7 +131,7 @@ Karachi City, Sindh, Pakistan"
 
         <TextView
                 android:id="@+id/textView11"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/roboto_medium"
