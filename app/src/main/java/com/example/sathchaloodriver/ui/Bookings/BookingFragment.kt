@@ -16,6 +16,7 @@ import com.example.sathchaloodriver.adapters.BookingDetailsAdapter
 class BookingFragment: Fragment() {
 //    private lateinit var bookingViewModel: BookingViewModel
 private lateinit var mRecyclerView: RecyclerView
+    private lateinit var root: View
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,9 +29,14 @@ private lateinit var mRecyclerView: RecyclerView
 //        bookingViewModel.text.observe(this, Observer {
 //            textView.text = it
 //        })
+
+        return root
+    }
+
+    override fun onResume() {
+        super.onResume()
         mRecyclerView = root.findViewById(R.id.bookingRecyclerView)
         mRecyclerView.layoutManager = LinearLayoutManager(root.context)
         mRecyclerView.adapter = BookingDetailsAdapter(root.context)
-        return root
     }
 }

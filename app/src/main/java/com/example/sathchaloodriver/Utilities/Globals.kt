@@ -9,5 +9,6 @@ class Globals{
         var user: FirebaseUser? = null
         var imageUri: Uri? = null
         var userImage: Bitmap? = null
+        var requestID:Int?  = 0
     }
 }

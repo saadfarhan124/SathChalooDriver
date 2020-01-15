@@ -121,7 +121,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
     }
 
+
+
     private fun init() {
+
 
         //routes select bottom sheet
         btn_bottomsheet = root.findViewById(R.id.floatingActionButtonRouteSelect)
