@@ -6,5 +6,5 @@
     <string name="title_notifications">Notification</string>
     <string name="title_Bookings">Bookings</string>
     <string name="title_profile">Profile</string>
-    <string name="title_wallet">Wallet</string>
+    <string name="title_history">History</string>
 </resources>
