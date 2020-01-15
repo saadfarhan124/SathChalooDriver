@@ -129,7 +129,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             val view = layoutInflater.inflate(R.layout.activity_routeselect_bottomsheet, null)
             mRecyclerView = view.findViewById(R.id.routeselectRecyclerView)
             mRecyclerView.layoutManager = LinearLayoutManager(root.context)
-            mRecyclerView.adapter = RouteSelectAdapter()
+            mRecyclerView.adapter = RouteSelectAdapter(root.context)
             val dialog = BottomSheetDialog(root.context)
             dialog.setContentView(view)
             dialog.show()

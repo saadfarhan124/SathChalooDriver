@@ -30,7 +30,7 @@ private lateinit var mRecyclerView: RecyclerView
 //        })
         mRecyclerView = root.findViewById(R.id.bookingRecyclerView)
         mRecyclerView.layoutManager = LinearLayoutManager(root.context)
-        mRecyclerView.adapter = BookingDetailsAdapter()
+        mRecyclerView.adapter = BookingDetailsAdapter(root.context)
         return root
     }
 }
