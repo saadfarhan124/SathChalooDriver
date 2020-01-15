@@ -18,7 +18,7 @@
 
         <TextView
                 android:id="@+id/txt_lbl_noPassemger"
-                android:layout_width="70dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
@@ -73,28 +73,32 @@
 
         <TextView
                 android:id="@+id/txt_pickupAddress"
-                android:layout_width="300dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/roboto_light"
                 android:text="Plot A 5/8, Block 5 A Block 5
 Nazimabad, Karach, Karachi City, Sindh"
                 android:textColor="@color/colorText1"
                 app:layout_constraintBottom_toBottomOf="@+id/img_pickupAddress"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/img_pickupAddress"
                 app:layout_constraintTop_toTopOf="@+id/img_pickupAddress" />
 
         <TextView
                 android:id="@+id/txt_dropoffAddress"
-                android:layout_width="300dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/roboto_light"
                 android:text="Plot 177 S, Pakistan Employees Co-Operative
 Housing Society Block 2 PECHS, Karachi,
 Karachi City, Sindh, Pakistan"
                 android:textColor="@color/colorText1"
                 app:layout_constraintBottom_toBottomOf="@+id/img_dropoffAddress"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/img_dropoffAddress"
                 app:layout_constraintTop_toTopOf="@+id/img_dropoffAddress" />
 

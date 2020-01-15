@@ -9,7 +9,7 @@ import com.example.sathchaloodriver.R
 class RouteSelectAdapter: RecyclerView.Adapter<RouteSelectViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RouteSelectViewHolder {
         val LayoutInflater = LayoutInflater.from(parent.context)
-        val cellForRow = LayoutInflater.inflate(R.layout.activity_notification_row, parent, false)
+        val cellForRow = LayoutInflater.inflate(R.layout.activity_routeselect_row, parent, false)
         return RouteSelectViewHolder(cellForRow)
     }
 

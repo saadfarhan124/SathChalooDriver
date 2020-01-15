@@ -23,12 +23,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.prototype.dataModels.Booking
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.Utilities.Util
+import com.example.sathchaloodriver.adapters.RouteSelectAdapter
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.PolyUtil
@@ -51,6 +55,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var btnEndRide: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var marker: Marker
+
+    //floating button open bottomsheet of route select
+    private lateinit var btn_bottomsheet: FloatingActionButton
+    private lateinit var mRecyclerView: RecyclerView
 
     private lateinit var startingPointLatLng: LatLng
     private lateinit var endingPointLatLng: LatLng
@@ -93,6 +101,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             confirmDialog.show()
         }
 
+
         return root
     }
 
@@ -113,6 +122,20 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     private fun init() {
+
+        //routes select bottom sheet
+        btn_bottomsheet = root.findViewById(R.id.floatingActionButtonRouteSelect)
+        btn_bottomsheet.setOnClickListener {
+            val view = layoutInflater.inflate(R.layout.activity_routeselect_bottomsheet, null)
+            mRecyclerView = view.findViewById(R.id.routeselectRecyclerView)
+            mRecyclerView.layoutManager = LinearLayoutManager(root.context)
+            mRecyclerView.adapter = RouteSelectAdapter()
+            val dialog = BottomSheetDialog(root.context)
+            dialog.setContentView(view)
+            dialog.show()
+        }
+
+
         getDocumentId()
         ListPickUpLatLng = mutableListOf()
         ListDropOffLatLng = mutableListOf()
