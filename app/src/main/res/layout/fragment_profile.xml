@@ -359,22 +359,24 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
     <com.mikhaellopez.circularimageview.CircularImageView
-            android:id= "@+id/imageViewUserDisplay"
+            android:id="@+id/imageViewUserDisplay"
             android:layout_width="128dp"
             android:layout_height="120dp"
             android:layout_marginTop="8dp"
-            android:src="@mipmap/ic_launcher_round"
             android:paddingTop="8dp"
+            android:src="@mipmap/ic_launcher_round"
             app:civ_border_color="@color/colorPrimary"
             app:civ_border_width="4dp"
             app:civ_shadow="true"
-            app:civ_shadow_radius="10"
             app:civ_shadow_color="@color/colorAccent"
+            app:civ_shadow_radius="10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            
-            />
+
+            app:layout_constraintTop_toTopOf="parent"></com.mikhaellopez.circularimageview.CircularImageView>
+
     <TextView
             android:id="@+id/userNameTextView"
             android:layout_width="wrap_content"
