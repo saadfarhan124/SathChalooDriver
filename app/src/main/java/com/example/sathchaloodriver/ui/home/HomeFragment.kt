@@ -80,7 +80,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             AndroidThreeTen.init(this.activity)
             getLocationPermission()
             init()
-            loadroutes()
+//            loadroutes()
 
         } else {
             val confirmDialog =
