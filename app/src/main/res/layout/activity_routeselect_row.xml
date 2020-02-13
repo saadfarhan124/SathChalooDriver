@@ -16,46 +16,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <TextView
-                android:id="@+id/txt_lbl_noPassemger"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Ride ID:"
-                android:textColor="@color/colorText1"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-                android:id="@+id/txt_rideID"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:fontFamily="@font/roboto"
-                android:text="01"
-                android:textColor="@color/colorText1"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/txt_lbl_noPassemger"
-                app:layout_constraintStart_toEndOf="@+id/txt_lbl_noPassemger"
-                app:layout_constraintTop_toTopOf="@+id/txt_lbl_noPassemger" />
-
         <ImageView
                 android:id="@+id/img_pickupAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                app:layout_constraintStart_toStartOf="@+id/txt_lbl_noPassemger"
-                app:layout_constraintTop_toBottomOf="@+id/txt_lbl_noPassemger"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_panorama_fish_eye_green_24dp" />
 
         <ImageView
                 android:id="@+id/img_dropoffAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="@+id/img_pickupAddress"
                 app:layout_constraintStart_toStartOf="@+id/img_pickupAddress"
                 app:layout_constraintTop_toBottomOf="@+id/divider10"
@@ -65,7 +40,7 @@
                 android:id="@+id/divider10"
                 android:layout_width="1dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="@+id/img_pickupAddress"
                 app:layout_constraintStart_toStartOf="@+id/img_pickupAddress"
@@ -73,75 +48,82 @@
 
         <TextView
                 android:id="@+id/txt_pickupAddress"
-                android:layout_width="0dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/roboto_light"
                 android:text="Plot A 5/8, Block 5 A Block 5
 Nazimabad, Karach, Karachi City, Sindh"
                 android:textColor="@color/colorText1"
                 app:layout_constraintBottom_toBottomOf="@+id/img_pickupAddress"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/img_pickupAddress"
                 app:layout_constraintTop_toTopOf="@+id/img_pickupAddress" />
 
         <TextView
                 android:id="@+id/txt_dropoffAddress"
-                android:layout_width="0dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/roboto_light"
                 android:text="Plot 177 S, Pakistan Employees Co-Operative
 Housing Society Block 2 PECHS, Karachi,
 Karachi City, Sindh, Pakistan"
                 android:textColor="@color/colorText1"
                 app:layout_constraintBottom_toBottomOf="@+id/img_dropoffAddress"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/img_dropoffAddress"
                 app:layout_constraintTop_toTopOf="@+id/img_dropoffAddress" />
 
         <TextView
-                android:id="@+id/txt_dropoffTime"
+                android:id="@+id/txt_lbl_noPassemger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto"
+                android:text="No of Passenger "
+                android:textColor="@color/colorText1"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/img_dropoffAddress"
+                app:layout_constraintTop_toBottomOf="@+id/txt_dropoffAddress" />
+
+
+        <TextView
+                android:id="@+id/txt_noPassenger"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/roboto"
-                android:text="6:00 PM"
+                android:fontFamily="@font/roboto_medium"
+                android:text="02"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/txt_dropoffAddress"
-                app:layout_constraintTop_toBottomOf="@+id/txt_dropoffAddress" />
+                app:layout_constraintStart_toStartOf="@+id/txt_lbl_noPassemger"
+                app:layout_constraintTop_toBottomOf="@+id/txt_lbl_noPassemger" />
 
         <TextView
-                android:id="@+id/txt_pickupTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:fontFamily="@font/roboto"
-                android:text="9:00 AM"
-                android:textColor="@color/colorText1"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toTopOf="@+id/txt_dropoffAddress"
-                app:layout_constraintStart_toStartOf="@+id/txt_pickupAddress"
-                app:layout_constraintTop_toBottomOf="@+id/txt_pickupAddress" />
-
-        <TextView
-                android:id="@+id/txt_date"
+                android:id="@+id/txt_lbl_startTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:fontFamily="@font/roboto"
-                android:text="15 Jan 20, Wednesday"
+                android:text="Start Time"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/txt_dropoffAddress" />
+
+        <TextView
+                android:id="@+id/txt_startTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="9:00 AM"
+                android:textColor="@color/colorText1"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/txt_lbl_startTime"
+                app:layout_constraintTop_toBottomOf="@+id/txt_lbl_startTime" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

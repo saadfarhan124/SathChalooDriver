@@ -8,11 +8,15 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sathchaloodriver.R
+import com.example.sathchaloodriver.adapters.BookingDetailsAdapter
 
 class BookingFragment: Fragment() {
 //    private lateinit var bookingViewModel: BookingViewModel
-
+private lateinit var mRecyclerView: RecyclerView
+    private lateinit var root: View
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,6 +29,14 @@ class BookingFragment: Fragment() {
 //        bookingViewModel.text.observe(this, Observer {
 //            textView.text = it
 //        })
+
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mRecyclerView = root.findViewById(R.id.bookingRecyclerView)
+        mRecyclerView.layoutManager = LinearLayoutManager(root.context)
+        mRecyclerView.adapter = BookingDetailsAdapter(root.context)
     }
 }

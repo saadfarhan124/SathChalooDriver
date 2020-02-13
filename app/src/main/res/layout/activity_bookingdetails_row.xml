@@ -20,33 +20,17 @@
                 android:id="@+id/textView17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto"
                 android:text="pending"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView14"
-                app:layout_constraintStart_toEndOf="@+id/textView14"
-                app:layout_constraintTop_toTopOf="@+id/textView14"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintStart_toStartOf="@+id/txt_pickupAddress"
+                app:layout_constraintTop_toBottomOf="@+id/txt_pickupAddress" />
 
         <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/txt_lbl_noPassemger"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Drop off: "
-                android:textColor="@color/colorText1"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView14"
-                app:layout_constraintTop_toBottomOf="@+id/textView14" />
-
-        <TextView
-                android:id="@+id/textView52"
-                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/roboto"
@@ -57,175 +41,118 @@
                 app:layout_constraintStart_toEndOf="@+id/textView11"
                 app:layout_constraintTop_toTopOf="@+id/textView11" />
 
-        <TextView
-                android:id="@+id/textView3"
+        <ImageView
+                android:id="@+id/img_pickupAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:fontFamily="@font/roboto"
-                android:text="Passenger Info"
-                android:textColor="@color/colorText1"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="@+id/divider"
-                app:layout_constraintEnd_toStartOf="@+id/divider"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/divider" />
-
-        <TextView
-                android:id="@+id/textView9"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="@font/roboto"
-                android:text="Address"
-                android:textColor="@color/colorText1"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView8"
-                app:layout_constraintStart_toEndOf="@+id/textView8"
-                app:layout_constraintTop_toTopOf="@+id/textView8"
-                app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-                android:id="@+id/textView8"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Pick up:"
-                android:textColor="@color/colorText1"
-                android:textSize="16sp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="@+id/textView11"
-                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                app:layout_constraintTop_toBottomOf="@+id/textView11"
+                app:srcCompat="@drawable/ic_panorama_fish_eye_green_24dp" />
+
+        <ImageView
+                android:id="@+id/img_dropoffAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/img_pickupAddress"
+                app:layout_constraintStart_toStartOf="@+id/img_pickupAddress"
+                app:layout_constraintTop_toBottomOf="@+id/divider10"
+                app:srcCompat="@drawable/ic_panorama_fish_eye_red_24dp" />
+
+        <View
+                android:id="@+id/divider10"
+                android:layout_width="1dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorAccent"
+                app:layout_constraintEnd_toEndOf="@+id/img_pickupAddress"
+                app:layout_constraintStart_toStartOf="@+id/img_pickupAddress"
+                app:layout_constraintTop_toBottomOf="@+id/img_pickupAddress" />
+
+        <TextView
+                android:id="@+id/txt_pickupAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="Plot A 5/8, Block 5 A Block 5
+Nazimabad, Karach, Karachi City, Sindh"
+                android:textColor="@color/colorText1"
+                app:layout_constraintBottom_toBottomOf="@+id/img_pickupAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_pickupAddress"
+                app:layout_constraintTop_toTopOf="@+id/img_pickupAddress" />
+
+        <TextView
+                android:id="@+id/txt_dropoffAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="Plot 177 S, Pakistan Employees Co-Operative
+Housing Society Block 2 PECHS, Karachi,
+Karachi City, Sindh, Pakistan"
+                android:textColor="@color/colorText1"
+                app:layout_constraintBottom_toBottomOf="@+id/img_dropoffAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_dropoffAddress"
+                app:layout_constraintTop_toTopOf="@+id/img_dropoffAddress" />
 
         <TextView
                 android:id="@+id/textView11"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="Name:"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="@+id/textView3"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
-
-        <TextView
-                android:id="@+id/textView"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Drop off: "
-                android:textColor="@color/colorText1"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="@+id/textView8"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-        <TextView
-                android:id="@+id/textView55"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="No of Seats: "
-                android:textColor="@color/colorText1"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-        <TextView
-                android:id="@+id/textView56"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="@font/roboto"
-                android:text="50"
-                android:textColor="@color/colorAccent"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView55"
-                app:layout_constraintStart_toEndOf="@+id/textView55"
-                app:layout_constraintTop_toTopOf="@+id/textView55"
-                app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-                android:id="@+id/textView10"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="@font/roboto"
-                android:text="Address"
-                android:textColor="@color/colorText1"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
-                app:layout_constraintStart_toEndOf="@+id/textView"
-                app:layout_constraintTop_toTopOf="@+id/textView"
-                app:layout_constraintVertical_bias="0.0" />
-
-        <View
-                android:id="@+id/divider"
-                android:layout_width="280dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="99dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/colorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-                android:id="@+id/textView13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:fontFamily="@font/roboto"
-                android:text="Status"
-                android:textColor="@color/colorText1"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="@+id/divider2"
-                app:layout_constraintEnd_toStartOf="@+id/divider2"
-                app:layout_constraintStart_toStartOf="@+id/textView55"
-                app:layout_constraintTop_toTopOf="@+id/divider2" />
-
-        <View
-                android:id="@+id/divider2"
-                android:layout_width="320dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="59dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/colorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView55" />
-
-        <TextView
-                android:id="@+id/textView14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Pick up: "
-                android:textColor="@color/colorText1"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="@+id/textView13"
-                app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
         <TextView
                 android:id="@+id/textView15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/roboto"
                 android:text="pending"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView16"
-                app:layout_constraintStart_toEndOf="@+id/textView16"
-                app:layout_constraintTop_toTopOf="@+id/textView16" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/txt_dropoffAddress"
+                app:layout_constraintTop_toBottomOf="@+id/txt_dropoffAddress" />
+
+        <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:fontFamily="@font/roboto"
+                android:text="9:00 AM"
+                android:textColor="@color/colorText1"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView17"
+                app:layout_constraintStart_toEndOf="@+id/textView17"
+                app:layout_constraintTop_toTopOf="@+id/textView17" />
+
+        <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:fontFamily="@font/roboto"
+                android:text="6:00 PM"
+                android:textColor="@color/colorText1"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView15"
+                app:layout_constraintStart_toEndOf="@+id/textView15"
+                app:layout_constraintTop_toTopOf="@+id/textView15" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

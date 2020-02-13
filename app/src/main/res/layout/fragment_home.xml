@@ -18,40 +18,45 @@
 
     <com.google.android.material.button.MaterialButton
             android:id="@+id/btnStartRide"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/colorAccent"
             android:paddingTop="14dp"
             android:paddingBottom="14dp"
             android:text="Start Ride"
+            android:textColor="@color/colorText"
             android:textSize="16sp"
             app:cornerRadius="12dp"
-            android:textColor="@color/colorText"
-            android:backgroundTint="@color/colorAccent"
-            style="@style/Widget.MaterialComponents.Button"
-            app:layout_constraintEnd_toEndOf="@+id/map"
-            app:layout_constraintStart_toStartOf="@+id/map" android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/map" android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"/>
+            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/map" />
+
     <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEndRide"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/colorAccent"
+            android:enabled="false"
             android:paddingTop="14dp"
             android:paddingBottom="14dp"
             android:text="End Ride"
-            android:enabled="false"
-            android:visibility="invisible"
-            android:textSize="16sp"
-            app:cornerRadius="12dp"
             android:textColor="@color/colorPrimary"
-            android:backgroundTint="@color/colorAccent"
-            style="@style/Widget.MaterialComponents.Button"
-            app:layout_constraintEnd_toEndOf="@+id/map"
-            app:layout_constraintStart_toStartOf="@+id/map" android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/map" android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"/>
+            android:textSize="16sp"
+            android:visibility="invisible"
+            app:cornerRadius="12dp"
+            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/map" />
 
     <ProgressBar
             android:id="@+id/progressBar"
@@ -67,6 +72,20 @@
             app:layout_constraintEnd_toEndOf="@+id/map"
             app:layout_constraintStart_toStartOf="@+id/map"
             app:layout_constraintTop_toTopOf="@+id/map" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButtonRouteSelect"
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:clickable="true"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/btnEndRide"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/colorText"
+            app:srcCompat="@drawable/ic_directions_car_white_24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
         <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->

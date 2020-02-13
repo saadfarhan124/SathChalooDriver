@@ -18,10 +18,10 @@
             tools:layout="@layout/fragment_booking_details" />
 
     <fragment
-            android:id="@+id/navigation_wallet"
-            android:name="com.example.sathchaloodriver.ui.wallet.WalletFragment"
-            android:label="@string/title_wallet"
-            tools:layout="@layout/fragment_wallet" />
+            android:id="@+id/navigation_history"
+            android:name="com.example.sathchaloodriver.ui.history.HistoryFragment"
+            android:label="@string/title_history"
+            tools:layout="@layout/fragment_history" />
 
 
     <fragment
