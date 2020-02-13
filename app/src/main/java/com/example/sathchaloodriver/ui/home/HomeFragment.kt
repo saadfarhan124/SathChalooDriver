@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.prototype.dataModels.Booking
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.Utilities.Util
+import com.example.sathchaloodriver.dataModels.RoutesDataModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -145,28 +146,28 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     private fun init() {
 
-//        val listOfRoutes = mutableListOf<RoutesDataModel>()
-//        for(routeID in listOfRouteIds){
-//            Util.getFireStoreInstance().collection("Routes")
-//                .document(routeID)
-//                .get()
-//                .addOnSuccessListener {
-//                    val route = it.toObject(RoutesDataModel::class.java)
-//                    route!!.routeID = it.id
-//                    listOfRoutes.add(route!!)
-//                }
-//        }
-//        //routes select bottom sheet
-//        btn_bottomsheet = root.findViewById(R.id.floatingActionButtonRouteSelect)
-//        btn_bottomsheet.setOnClickListener {
-//            val view = layoutInflater.inflate(R.layout.activity_routeselect_bottomsheet, null)
-//            mRecyclerView = view.findViewById(R.id.routeselectRecyclerView)
-//            mRecyclerView.layoutManager = LinearLayoutManager(root.context)
-//            mRecyclerView.adapter = RouteSelectAdapter(root.context, listOfRoutes)
-//            val dialog = BottomSheetDialog(root.context)
-//            dialog.setContentView(view)
-//            dialog.show()
-//        }
+        val listOfRoutes = mutableListOf<RoutesDataModel>()
+        for(routeID in listOfRouteIds){
+            Util.getFireStoreInstance().collection("Routes")
+                .document(routeID)
+                .get()
+                .addOnSuccessListener {
+                    val route = it.toObject(RoutesDataModel::class.java)
+                    route!!.routeID = it.id
+                    listOfRoutes.add(route!!)
+                }
+        }
+        //routes select bottom sheet
+        btn_bottomsheet = root.findViewById(R.id.floatingActionButtonRouteSelect)
+        btn_bottomsheet.setOnClickListener {
+            val view = layoutInflater.inflate(R.layout.activity_routeselect_bottomsheet, null)
+            mRecyclerView = view.findViewById(R.id.routeselectRecyclerView)
+            mRecyclerView.layoutManager = LinearLayoutManager(root.context)
+            mRecyclerView.adapter = RouteSelectAdapter(root.context, listOfRoutes)
+            val dialog = BottomSheetDialog(root.context)
+            dialog.setContentView(view)
+            dialog.show()
+        }
 
 
         ListPickUpLatLng = mutableListOf()
