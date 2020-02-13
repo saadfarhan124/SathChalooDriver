@@ -23,12 +23,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.prototype.dataModels.Booking
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.Utilities.Util
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.PolyUtil
@@ -37,6 +40,7 @@ import org.jetbrains.anko.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+
 
 class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private var btn: Button? = null
@@ -52,14 +56,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var progressBar: ProgressBar
     private lateinit var marker: Marker
 
-    private lateinit  var startingPointLatLng: LatLng
+    //floating button open bottomsheet of route select
+    private lateinit var btn_bottomsheet: FloatingActionButton
+    private lateinit var mRecyclerView: RecyclerView
+
+    private lateinit var startingPointLatLng: LatLng
     private lateinit var endingPointLatLng: LatLng
 
     //Flag to check if the properties been initilized
-    private var initializeFlag:Boolean = false
+    private var initializeFlag: Boolean = false
 
     //Variable to save document ID
-    private lateinit var driverDocumentRef:DocumentReference
+    private lateinit var driverDocumentRef: DocumentReference
 
 
     //Permission Vars
@@ -69,6 +77,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     //Permission Flag
     private var permissionFlag = false
 
+    //Route ID
+    private lateinit var routeID: String
+
+    private lateinit var listOfRouteIds: MutableList<String>
+
     private lateinit var root: View
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,11 +90,24 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     ): View? {
         root = inflater.inflate(R.layout.fragment_home, container, false)
         if (Util.verifyAvailableNetwork(activity!! as AppCompatActivity)) {
-            AndroidThreeTen.init(this.activity)
-            getLocationPermission()
-            init()
-//            loadroutes()
+            Util.getFireStoreInstance().collection("DriverRoute")
+                .whereEqualTo("driverId", Util.getGlobals().user!!.uid)
+                .get()
+                .addOnSuccessListener {
 
+                    listOfRouteIds = mutableListOf()
+                    for (doc in it.documents){
+                        listOfRouteIds.add(doc["routeId"].toString())
+                    }
+                    AndroidThreeTen.init(this.activity)
+                    getLocationPermission()
+                    init()
+                    if(activity!!.intent.extras != null){
+                        routeID = activity!!.intent.extras!!["selectedRouteID"].toString()
+                        loadroutes()
+                    }
+
+                }
         } else {
             val confirmDialog =
                 AlertDialog.Builder(root.context, R.style.ThemeOverlay_MaterialComponents_Dialog)
@@ -94,27 +120,55 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             confirmDialog.show()
         }
 
+
         return root
     }
 
-    private fun updateLocationInDb(location: Location?){
-        if(location != null){
+    private fun updateLocationInDb(location: Location?) {
+        if (location != null) {
             driverDocumentRef
-                .update("driver_location" , GeoPoint(location.latitude, location.longitude))
+                .update("driver_location", GeoPoint(location.latitude, location.longitude))
         }
     }
 
-    private fun getDocumentId(){
-        Util.getFireStoreInstance().collection("driver_routes")
+    private fun getDocumentId() {
+        Util.getFireStoreInstance().collection("DriverRoute")
+            .whereEqualTo("driverId", Util.getGlobals().user!!.uid)
             .get()
             .addOnSuccessListener {
-                driverDocumentRef = Util.getFireStoreInstance().collection("driver_routes")
+                driverDocumentRef = Util.getFireStoreInstance().collection("DriverRoute")
                     .document(it.first().id)
             }
     }
 
+
+
     private fun init() {
-        getDocumentId()
+
+//        val listOfRoutes = mutableListOf<RoutesDataModel>()
+//        for(routeID in listOfRouteIds){
+//            Util.getFireStoreInstance().collection("Routes")
+//                .document(routeID)
+//                .get()
+//                .addOnSuccessListener {
+//                    val route = it.toObject(RoutesDataModel::class.java)
+//                    route!!.routeID = it.id
+//                    listOfRoutes.add(route!!)
+//                }
+//        }
+//        //routes select bottom sheet
+//        btn_bottomsheet = root.findViewById(R.id.floatingActionButtonRouteSelect)
+//        btn_bottomsheet.setOnClickListener {
+//            val view = layoutInflater.inflate(R.layout.activity_routeselect_bottomsheet, null)
+//            mRecyclerView = view.findViewById(R.id.routeselectRecyclerView)
+//            mRecyclerView.layoutManager = LinearLayoutManager(root.context)
+//            mRecyclerView.adapter = RouteSelectAdapter(root.context, listOfRoutes)
+//            val dialog = BottomSheetDialog(root.context)
+//            dialog.setContentView(view)
+//            dialog.show()
+//        }
+
+
         ListPickUpLatLng = mutableListOf()
         ListDropOffLatLng = mutableListOf()
         listBooking = mutableListOf()
@@ -170,139 +224,123 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 System.exit(0)
             }
             alertDialog.show()
-
         }
-
-
     }
 
     private fun loadroutes() {
         var db = Util.getFireStoreInstance()
-        //Retrieve route ID
-        db.collection("driver_routes")
-            .whereEqualTo("driverId", Util.getFirebaseAuth().currentUser!!.uid)
+        //retrieve route
+        db.collection("Routes").document(routeID)
             .get()
-            .addOnCompleteListener { taskGetRouteId ->
-                if (taskGetRouteId.isSuccessful) {
-                    //get starting and ending point of route pick up and drop off
-                    var startingPoint =
-                        taskGetRouteId.result!!.first()["startingGeoPoint"] as GeoPoint
-                    var endingPoint = taskGetRouteId.result!!.first()["endingGeoPoint"] as GeoPoint
-                    startingPointLatLng =
-                        LatLng(startingPoint.latitude, startingPoint.longitude)
-                    endingPointLatLng = LatLng(endingPoint.latitude, endingPoint.longitude)
-                    addMarkerEnding(
-                        endingPointLatLng!!
-                        , "Ending"
-                    )
-                    addMarkerStarting(
-                        startingPointLatLng!!
-                        , "Starting"
-                    )
+            .addOnSuccessListener { routeDetails ->
+                Log.d("SAAAD", routeDetails.toString())
+                var startingPoint = routeDetails["startingPoint"] as GeoPoint
 
-                    //get bookings on that route for that day
-                    db.collection("booking")
-                        .whereEqualTo(
-                            "routeId",
-                            taskGetRouteId.result!!.first()["routeId"].toString()
-                        )
-                        .whereEqualTo("bookingDate", Util.getFormattedDate())
-                        .get()
-                        .addOnCompleteListener { taskGetBookingsAccordingToRouteIdAndCurrentDay ->
-                            if (taskGetBookingsAccordingToRouteIdAndCurrentDay.isSuccessful) {
-                                for (doc in taskGetBookingsAccordingToRouteIdAndCurrentDay.result!!) {
-                                    var pickUpLatLng = LatLng(
-                                        doc["pickupLat"].toString().toDouble(),
-                                        doc["pickupLong"].toString().toDouble()
+                var endingPoint = routeDetails["endingPoint"] as GeoPoint
+                startingPointLatLng =
+                    LatLng(startingPoint.latitude, startingPoint.longitude)
+                endingPointLatLng = LatLng(endingPoint.latitude, endingPoint.longitude)
+                addMarkerEnding(
+                    endingPointLatLng!!
+                    , "Ending"
+                )
+                addMarkerStarting(
+                    startingPointLatLng!!
+                    , "Starting"
+                )
+                //get bookings on that route for that day
+                db.collection("Booking")
+                    .whereEqualTo(
+                        "routeID",
+                        routeDetails.id
+                    )
+                    .whereEqualTo("selectedDay", "Wednesday")
+                    .get()
+                    .addOnFailureListener {
+                        Toast.makeText(root.context, it.message, Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnSuccessListener { taskGetBookingsAccordingToRouteIdAndCurrentDay ->
+                        if (taskGetBookingsAccordingToRouteIdAndCurrentDay.isEmpty) {
+                            Toast.makeText(root.context, "No Bookings Found", Toast.LENGTH_SHORT).show()
+                            progressBar.visibility = View.INVISIBLE
+                        } else {
+                            for (doc in taskGetBookingsAccordingToRouteIdAndCurrentDay.documents!!) {
+                                var pickUpLatLng = LatLng(
+                                    doc["pickUpLat"].toString().toDouble(),
+                                    doc["pickUpLong"].toString().toDouble()
+                                )
+                                var droppOffLatLng = LatLng(
+                                    doc["dropOffLat"].toString().toDouble(),
+                                    doc["dropOffLong"].toString().toDouble()
+                                )
+                                ListPickUpLatLng.add(pickUpLatLng)
+                                ListDropOffLatLng.add(droppOffLatLng)
+                                val booking = doc.toObject(Booking::class.java)
+                                listBooking.add(booking!!)
+                                addMarkerPickUp(
+                                    pickUpLatLng,
+                                    "Pickup :"
+                                )
+                                addMarkerDropOff(
+                                    droppOffLatLng,
+                                    "Dropoff :"
+                                )
+                                if (ListDropOffLatLng.size > 0) {
+                                    val url = Util.getURL(
+                                        startingPointLatLng!!,
+                                        endingPointLatLng!!,
+                                        getString(R.string.google_maps_key),
+                                        ListPickUpLatLng,
+                                        ListDropOffLatLng
                                     )
-                                    var droppOffLatLng = LatLng(
-                                        doc["dropOffLat"].toString().toDouble(),
-                                        doc["dropOffLong"].toString().toDouble()
-                                    )
-                                    ListPickUpLatLng.add(pickUpLatLng)
-                                    ListDropOffLatLng.add(droppOffLatLng)
-                                    val booking = doc.toObject(Booking::class.java)
-                                    listBooking.add(booking)
-                                    addMarkerPickUp(
-                                        pickUpLatLng,
-                                        "Pickup : ${doc["bookingMadeBy"]}"
-                                    )
-                                    addMarkerDropOff(
-                                        droppOffLatLng,
-                                        "Dropoff : ${doc["bookingMadeBy"]}"
-                                    )
-                                    if (ListDropOffLatLng.size > 0) {
-                                        val url = Util.getURL(
-                                            startingPointLatLng!!,
-                                            endingPointLatLng!!,
-                                            getString(R.string.google_maps_key),
-                                            ListPickUpLatLng,
-                                            ListDropOffLatLng
-                                        )
-                                        async {
-                                            val result = URL(url).readText()
-                                            uiThread {
-                                                val response = JSONObject(result)
-                                                Log.d("Billie", response.toString())
-                                                val routes: JSONArray =
-                                                    response.getJSONArray("routes")
-                                                val routesObject = routes.getJSONObject(0)
-                                                val polylines =
-                                                    routesObject.getJSONObject("overview_polyline")
-                                                val encodedString = polylines.getString("points")
-                                                val bounds = LatLngBounds.Builder().include(
-                                                    LatLng(
-                                                        startingPoint.latitude,
-                                                        startingPoint.longitude
-                                                    )
-                                                ).include(
-                                                    LatLng(
-                                                        endingPoint.latitude,
-                                                        endingPoint.longitude
-                                                    )
+                                    async {
+                                        val result = URL(url).readText()
+                                        uiThread {
+                                            val response = JSONObject(result)
+                                            val routes: JSONArray =
+                                                response.getJSONArray("routes")
+                                            val routesObject = routes.getJSONObject(0)
+                                            val polylines =
+                                                routesObject.getJSONObject("overview_polyline")
+                                            val encodedString = polylines.getString("points")
+                                            val bounds = LatLngBounds.Builder().include(
+                                                LatLng(
+                                                    startingPoint.latitude,
+                                                    startingPoint.longitude
                                                 )
-                                                    .include(pickUpLatLng)
-                                                    .include(droppOffLatLng)
-                                                mMap.animateCamera(
-                                                    CameraUpdateFactory.newLatLngBounds(
-                                                        bounds.build(),
-                                                        180
-                                                    )
+                                            ).include(
+                                                LatLng(
+                                                    endingPoint.latitude,
+                                                    endingPoint.longitude
                                                 )
-                                                mMap.addPolyline(
-                                                    PolylineOptions().addAll(
-                                                        PolyUtil.decode(
-                                                            encodedString
-                                                        )
-                                                    ).color(
-                                                        Color.BLUE
-                                                    )
+                                            )
+                                                .include(pickUpLatLng)
+                                                .include(droppOffLatLng)
+                                            mMap.animateCamera(
+                                                CameraUpdateFactory.newLatLngBounds(
+                                                    bounds.build(),
+                                                    180
                                                 )
-                                                progressBar.visibility = View.INVISIBLE
-                                                initializeFlag = true
+                                            )
+                                            mMap.addPolyline(
+                                                PolylineOptions().addAll(
+                                                    PolyUtil.decode(
+                                                        encodedString
+                                                    )
+                                                ).color(
+                                                    Color.BLUE
+                                                )
+                                            )
+                                            progressBar.visibility = View.INVISIBLE
+                                            initializeFlag = true
 
-                                            }
                                         }
-                                    } else {
-                                        Toast.makeText(
-                                            root.context,
-                                            "No bookings found",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
                                     }
-
                                 }
                             }
                         }
-                } else {
-                    Toast.makeText(
-                        root.context,
-                        "No routes found against driver",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                    }
             }
-
     }
 
 
@@ -418,7 +456,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     override fun onLocationChanged(location: Location?) {
-        if(initializeFlag){
+        if (initializeFlag) {
             moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
             updateLocationInDb(location)
             if (Util.getDistance(
@@ -448,7 +486,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                                 dialog.dismiss()
                             }
                     }
-                    view.findViewById<TextView>(R.id.bookingNameTextView).text = booking.bookingMadeBy
+                    view.findViewById<TextView>(R.id.bookingNameTextView).text =
+                        booking.bookingMadeBy
                     view.findViewById<TextView>(R.id.noOfSeatsTextView).text =
                         booking.numberOfSeats.toString()
                     dialog.setContentView(view)
@@ -478,7 +517,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                             }
 
                     }
-                    view.findViewById<TextView>(R.id.bookingNameTextView).text = booking.bookingMadeBy
+                    view.findViewById<TextView>(R.id.bookingNameTextView).text =
+                        booking.bookingMadeBy
                     view.findViewById<TextView>(R.id.totalFareTextView).text =
                         booking.totalFare.toString()
                     dialog.setContentView(view)
