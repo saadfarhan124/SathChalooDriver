@@ -24,7 +24,7 @@ private lateinit var mRecyclerView: RecyclerView
     ): View? {
 //        bookingViewModel =
 //            ViewModelProviders.of(this).get(BookingViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_booking_details, container, false)
+        root = inflater.inflate(R.layout.fragment_booking_details, container, false)
 //        val textView: TextView = root.findViewById(R.id.text_dashboard)
 //        bookingViewModel.text.observe(this, Observer {
 //            textView.text = it
