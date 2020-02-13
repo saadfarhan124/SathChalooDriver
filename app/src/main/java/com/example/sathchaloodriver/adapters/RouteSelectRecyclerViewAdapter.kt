@@ -1,14 +1,17 @@
 package com.example.sathchaloodriver.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sathchaloodriver.MainActivity
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.dataModels.RoutesDataModel
+import com.example.sathchaloodriver.ui.home.HomeFragment
 import org.jetbrains.anko.onClick
 
 class RouteSelectAdapter(private var context: Context,
@@ -25,8 +28,17 @@ class RouteSelectAdapter(private var context: Context,
     }
 
     override fun onBindViewHolder(holder: RouteSelectViewHolder, position: Int) {
-        holder.itemView.onClick {
+        val route = listOfRoutes[position]
 
+        holder.txt_pickupAddress.text = route.startingAddress
+        holder.txt_dropoffAddress.text = route.endingAddress
+        holder.txt_startTime.text = route.startingTime
+
+        holder.itemView.onClick {
+            var intent = Intent(context, MainActivity::class.java)
+            intent.putExtra("selectedRouteID", route.routeID)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
         }
     }
 
