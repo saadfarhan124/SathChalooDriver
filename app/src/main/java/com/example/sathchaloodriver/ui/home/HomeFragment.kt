@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.PolyUtil
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -72,6 +73,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     //Variable to save document ID
     private lateinit var driverDocumentRef: DocumentReference
+
+    //Selected Route
+    private lateinit var selectedRoute: DocumentSnapshot
 
 
     //Permission Vars
@@ -187,6 +191,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         btnEndRide.onClick {
             var driverRide = DriverRideDataModel(
                 Util.getGlobals().user!!.uid,
+                selectedRoute["startingAddress"].toString(),
+                selectedRoute["endingAddress"].toString(),
+                selectedRoute.id,
                 listBooking,
                 Util.getFormattedDate()
             )
@@ -267,6 +274,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 val startingPoint = routeDetails["startingPoint"] as GeoPoint
 
                 val endingPoint = routeDetails["endingPoint"] as GeoPoint
+
+                selectedRoute = routeDetails
+
                 startingPointLatLng =
                     LatLng(startingPoint.latitude, startingPoint.longitude)
                 endingPointLatLng = LatLng(endingPoint.latitude, endingPoint.longitude)

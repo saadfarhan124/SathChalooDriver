@@ -9,23 +9,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.adapters.HistoryAdapter
+import com.example.sathchaloodriver.dataModels.DriverRideDataModel
 
 class HistoryFragment : Fragment(){
 
 //    private lateinit var walletViewModel: HistoryViewModel
 private lateinit var mRecyclerView: RecyclerView
+private lateinit var listOfRides: MutableList<DriverRideDataModel>
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        walletViewModel =
-//            ViewModelProviders.of(this).get(HistoryViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_history, container, false)
-//        val textView: TextView = root.findViewById(R.id.text)
-//        walletViewModel.text.observe(this, Observer {
-//            textView.text = it
-//        })
         mRecyclerView = root.findViewById(R.id.historyRecyclerView)
         mRecyclerView.layoutManager = LinearLayoutManager(root.context)
         mRecyclerView.adapter = HistoryAdapter()
