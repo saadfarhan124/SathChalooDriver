@@ -10,7 +10,7 @@ class Booking : Serializable {
     var pickUpAddress: String? = null
     var dropOffTime: String? = null
     var dropOffAddress: String? = null
-    var bookingId: Long = 0
+    var bookingId: String? = null
     var username: String? = null
     var id: String = ""
     var rideStatus: String = ""

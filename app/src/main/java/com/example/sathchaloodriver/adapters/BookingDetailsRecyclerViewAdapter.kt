@@ -35,6 +35,7 @@ class BookingDetailsAdapter(private var context: Context,
         holder.textViewDropOffAddress.text = booking.dropOffAddress
         holder.textViewPickUpTime.text = booking.pickUpTime
         holder.textViewDropOffTime.text = booking.dropOffTime
+        holder.textViewStatus.text = booking.rideStatus
 
         holder.itemView.onClick {
            // val intent = Intent(context,HelloActivity::class.java) startActivity(intent)
@@ -48,6 +49,8 @@ class BookingDetailsAdapter(private var context: Context,
         internal var textViewDropOffAddress: TextView = v.findViewById(R.id.textViewDropOffAddress)
         internal var textViewPickUpTime: TextView = v.findViewById(R.id.textViewPickUpTime)
         internal var textViewDropOffTime: TextView = v.findViewById(R.id.textViewDropOffTime)
+        internal var textViewStatus: TextView = v.findViewById(R.id.textViewStatus)
+
 
     }
 }

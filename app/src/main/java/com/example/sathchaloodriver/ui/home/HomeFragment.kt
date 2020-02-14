@@ -88,18 +88,22 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
 
     private lateinit var root: View
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         root = inflater.inflate(R.layout.fragment_home, container, false)
+        retainInstance = true
+
         if (Util.verifyAvailableNetwork(activity!! as AppCompatActivity)) {
             Util.getFireStoreInstance().collection("DriverRoute")
                 .whereEqualTo("driverId", Util.getGlobals().user!!.uid)
                 .get()
                 .addOnSuccessListener {
-
                     listOfRouteIds = mutableListOf()
                     for (doc in it.documents){
                         listOfRouteIds.add(doc["routeId"].toString())
@@ -181,16 +185,29 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         ListDropOffLatLng = mutableListOf()
         listBooking = mutableListOf()
         btnEndRide = root.findViewById(R.id.btnEndRide)
+        btnEndRide.onClick {
+            val alert = Util.getAlertDialog(root.context)
+            alert.setMessage("Do you really want to complete this ride ?")
+            alert.setPositiveButton("Yes"){_,_ ->
+
+            }
+            alert.setNegativeButton("No"){dialog,_ ->
+                dialog.dismiss()
+            }
+        }
         btnStartRide = root.findViewById(R.id.btnStartRide)
         btnStartRide.setOnClickListener {
-            moveCamera(
-                LatLng(marker.position.latitude, marker.position.longitude),
-                Util.getBiggerZoomValue()
-            )
-            //Updating booking status
-            driverDocumentRef.update("rideStatus", "started")
-            btnStartRide.visibility = View.INVISIBLE
-            btnEndRide.visibility = View.VISIBLE
+            listBooking[0].rideStatus = "completed"
+            Util.getGlobals().listOfCurrentBookings = listBooking
+
+//            moveCamera(
+//                LatLng(marker.position.latitude, marker.position.longitude),
+//                Util.getBiggerZoomValue()
+//            )
+//            //Updating booking status
+//            driverDocumentRef.update("rideStatus", "started")
+//            btnStartRide.visibility = View.INVISIBLE
+//            btnEndRide.visibility = View.VISIBLE
         }
 
         btnEndRide.setOnClickListener {
@@ -283,6 +300,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                                 ListPickUpLatLng.add(pickUpLatLng)
                                 ListDropOffLatLng.add(droppOffLatLng)
                                 val booking = doc.toObject(Booking::class.java)
+                                booking!!.bookingId = doc.id
                                 listBooking.add(booking!!)
                                 addMarkerPickUp(
                                     pickUpLatLng,
@@ -355,6 +373,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         mMap = googleMap
         if (permissionFlag) {
             try {
+                val karachi = LatLng(25.1921465, 66.5949924)
+                moveCamera(karachi, 6f)
                 mMap.isMyLocationEnabled = true
             } catch (e: SecurityException) {
 
@@ -476,7 +496,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 if (Util.getDistance(
                         LatLng(location!!.latitude, location!!.longitude),
                         LatLng(booking.pickUpLat!!, booking.pickUpLong!!)
-                    ) < 200 && booking.rideStatus == "booked"
+                    ) < 200 && booking.rideStatus == "Booked"
                 ) {
                     //Bottom sheet
                     val view = layoutInflater.inflate(R.layout.activity_pickup_bottomsheet, null)
@@ -485,7 +505,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                         //Update booking status
                         booking.rideStatus = "pickedUp"
                         //Updating ride status in db
-                        Util.getFireStoreInstance().collection("booking")
+                        Util.getFireStoreInstance().collection("Booking")
                             .document(booking.bookingId.toString())
                             .set(booking)
                             .addOnSuccessListener {
@@ -507,7 +527,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     val dialog = BottomSheetDialog(root.context)
                     view.findViewById<Button>(R.id.btnDropOff).onClick {
                         booking.rideStatus = "completed"
-                        Util.getFireStoreInstance().collection("booking")
+
+                        Util.getFireStoreInstance().collection("Booking")
                             .document(booking.bookingId.toString())
                             .set(booking)
                             .addOnCompleteListener {
