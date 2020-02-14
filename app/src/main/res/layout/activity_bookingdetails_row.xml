@@ -17,7 +17,7 @@
             android:layout_height="wrap_content">
 
         <TextView
-                android:id="@+id/textView17"
+                android:id="@+id/textViewPickUpStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -25,11 +25,11 @@
                 android:text="pending"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="@+id/txt_pickupAddress"
-                app:layout_constraintTop_toBottomOf="@+id/txt_pickupAddress" />
+                app:layout_constraintStart_toStartOf="@+id/textViewPickUpAddress"
+                app:layout_constraintTop_toBottomOf="@+id/textViewPickUpAddress" />
 
         <TextView
-                android:id="@+id/txt_lbl_noPassemger"
+                android:id="@+id/textViewBookingName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -71,7 +71,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/img_pickupAddress" />
 
         <TextView
-                android:id="@+id/txt_pickupAddress"
+                android:id="@+id/textViewPickUpAddress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -86,7 +86,7 @@ Nazimabad, Karach, Karachi City, Sindh"
                 app:layout_constraintTop_toTopOf="@+id/img_pickupAddress" />
 
         <TextView
-                android:id="@+id/txt_dropoffAddress"
+                android:id="@+id/textViewDropOffAddress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -115,7 +115,7 @@ Karachi City, Sindh, Pakistan"
                 app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/textViewDropOffStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -125,11 +125,11 @@ Karachi City, Sindh, Pakistan"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/txt_dropoffAddress"
-                app:layout_constraintTop_toBottomOf="@+id/txt_dropoffAddress" />
+                app:layout_constraintStart_toStartOf="@+id/textViewDropOffAddress"
+                app:layout_constraintTop_toBottomOf="@+id/textViewDropOffAddress" />
 
         <TextView
-                android:id="@+id/textView"
+                android:id="@+id/textViewPickUpTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -137,12 +137,12 @@ Karachi City, Sindh, Pakistan"
                 android:text="9:00 AM"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView17"
-                app:layout_constraintStart_toEndOf="@+id/textView17"
-                app:layout_constraintTop_toTopOf="@+id/textView17" />
+                app:layout_constraintBottom_toBottomOf="@+id/textViewPickUpStatus"
+                app:layout_constraintStart_toEndOf="@+id/textViewPickUpStatus"
+                app:layout_constraintTop_toTopOf="@+id/textViewPickUpStatus" />
 
         <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/textViewDropOffTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -150,9 +150,9 @@ Karachi City, Sindh, Pakistan"
                 android:text="6:00 PM"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView15"
-                app:layout_constraintStart_toEndOf="@+id/textView15"
-                app:layout_constraintTop_toTopOf="@+id/textView15" />
+                app:layout_constraintBottom_toBottomOf="@+id/textViewDropOffStatus"
+                app:layout_constraintStart_toEndOf="@+id/textViewDropOffStatus"
+                app:layout_constraintTop_toTopOf="@+id/textViewDropOffStatus" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

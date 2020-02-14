@@ -6,12 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sathchaloodriver.MainActivity
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.dataModels.RoutesDataModel
-import com.example.sathchaloodriver.ui.home.HomeFragment
 import org.jetbrains.anko.onClick
 
 class RouteSelectAdapter(private var context: Context,
@@ -43,8 +41,8 @@ class RouteSelectAdapter(private var context: Context,
     }
 
     inner class RouteSelectViewHolder internal constructor(view: View) : RecyclerView.ViewHolder(view) {
-        internal var txt_pickupAddress: TextView = view.findViewById(R.id.txt_pickupAddress)
-        internal var txt_dropoffAddress: TextView = view.findViewById(R.id.txt_dropoffAddress)
+        internal var txt_pickupAddress: TextView = view.findViewById(R.id.textViewPickUpAddress)
+        internal var txt_dropoffAddress: TextView = view.findViewById(R.id.textViewDropOffAddress)
         internal var txt_startTime: TextView = view.findViewById(R.id.txt_startTime)
     }
 }

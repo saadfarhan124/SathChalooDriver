@@ -45,7 +45,7 @@ import java.net.URL
 
 
 class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
-    private var btn: Button? = null
+
     private lateinit var mMap: GoogleMap
     private lateinit var locationManager: LocationManager
 
@@ -79,10 +79,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     //Permission Flag
     private var permissionFlag = false
 
-    //Route ID
+    //Selected Route ID
     private lateinit var routeID: String
 
+    //List of routes assigned to a driver
     private lateinit var listOfRouteIds: MutableList<String>
+
+
 
     private lateinit var root: View
     override fun onCreateView(
@@ -146,6 +149,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
 
     private fun init() {
+        progressBar = root.findViewById(R.id.progressBar)
+
 
         val listOfRoutes = mutableListOf<RoutesDataModel>()
         for(routeID in listOfRouteIds){
@@ -156,6 +161,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     val route = it.toObject(RoutesDataModel::class.java)
                     route!!.routeID = it.id
                     listOfRoutes.add(route!!)
+                    progressBar.visibility = View.INVISIBLE
                 }
         }
         //routes select bottom sheet
@@ -174,7 +180,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         ListPickUpLatLng = mutableListOf()
         ListDropOffLatLng = mutableListOf()
         listBooking = mutableListOf()
-        progressBar = root.findViewById(R.id.progressBar)
         btnEndRide = root.findViewById(R.id.btnEndRide)
         btnStartRide = root.findViewById(R.id.btnStartRide)
         btnStartRide.setOnClickListener {
@@ -235,7 +240,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         db.collection("Routes").document(routeID)
             .get()
             .addOnSuccessListener { routeDetails ->
-                Log.d("SAAAD", routeDetails.toString())
                 var startingPoint = routeDetails["startingPoint"] as GeoPoint
 
                 var endingPoint = routeDetails["endingPoint"] as GeoPoint
@@ -267,6 +271,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                             progressBar.visibility = View.INVISIBLE
                         } else {
                             for (doc in taskGetBookingsAccordingToRouteIdAndCurrentDay.documents!!) {
+                                Log.d("SAAD", doc.toString())
                                 var pickUpLatLng = LatLng(
                                     doc["pickUpLat"].toString().toDouble(),
                                     doc["pickUpLong"].toString().toDouble()
@@ -281,62 +286,61 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                                 listBooking.add(booking!!)
                                 addMarkerPickUp(
                                     pickUpLatLng,
-                                    "Pickup :"
+                                    "Pickup : ${booking.username}"
                                 )
                                 addMarkerDropOff(
                                     droppOffLatLng,
-                                    "Dropoff :"
+                                    "Dropoff : ${booking.username}"
                                 )
-                                if (ListDropOffLatLng.size > 0) {
-                                    val url = Util.getURL(
-                                        startingPointLatLng!!,
-                                        endingPointLatLng!!,
-                                        getString(R.string.google_maps_key),
-                                        ListPickUpLatLng,
-                                        ListDropOffLatLng
-                                    )
-                                    async {
-                                        val result = URL(url).readText()
-                                        uiThread {
-                                            val response = JSONObject(result)
-                                            val routes: JSONArray =
-                                                response.getJSONArray("routes")
-                                            val routesObject = routes.getJSONObject(0)
-                                            val polylines =
-                                                routesObject.getJSONObject("overview_polyline")
-                                            val encodedString = polylines.getString("points")
-                                            val bounds = LatLngBounds.Builder().include(
-                                                LatLng(
-                                                    startingPoint.latitude,
-                                                    startingPoint.longitude
-                                                )
-                                            ).include(
-                                                LatLng(
-                                                    endingPoint.latitude,
-                                                    endingPoint.longitude
-                                                )
+                            }
+                            if (ListDropOffLatLng.size > 0) {
+                                Util.getGlobals().listOfCurrentBookings = listBooking
+                                val url = Util.getURL(
+                                    startingPointLatLng!!,
+                                    endingPointLatLng!!,
+                                    getString(R.string.google_maps_key),
+                                    ListPickUpLatLng,
+                                    ListDropOffLatLng
+                                )
+                                async {
+                                    val result = URL(url).readText()
+                                    uiThread {
+                                        val response = JSONObject(result)
+                                        val routes: JSONArray =
+                                            response.getJSONArray("routes")
+                                        val routesObject = routes.getJSONObject(0)
+                                        val polylines =
+                                            routesObject.getJSONObject("overview_polyline")
+                                        val encodedString = polylines.getString("points")
+                                        val bounds = LatLngBounds.Builder().include(
+                                            LatLng(
+                                                startingPoint.latitude,
+                                                startingPoint.longitude
                                             )
-                                                .include(pickUpLatLng)
-                                                .include(droppOffLatLng)
-                                            mMap.animateCamera(
-                                                CameraUpdateFactory.newLatLngBounds(
-                                                    bounds.build(),
-                                                    180
-                                                )
+                                        ).include(
+                                            LatLng(
+                                                endingPoint.latitude,
+                                                endingPoint.longitude
                                             )
-                                            mMap.addPolyline(
-                                                PolylineOptions().addAll(
-                                                    PolyUtil.decode(
-                                                        encodedString
-                                                    )
-                                                ).color(
-                                                    Color.BLUE
-                                                )
-                                            )
-                                            progressBar.visibility = View.INVISIBLE
-                                            initializeFlag = true
+                                        )
 
-                                        }
+                                        mMap.animateCamera(
+                                            CameraUpdateFactory.newLatLngBounds(
+                                                bounds.build(),
+                                                180
+                                            )
+                                        )
+                                        mMap.addPolyline(
+                                            PolylineOptions().addAll(
+                                                PolyUtil.decode(
+                                                    encodedString
+                                                )
+                                            ).color(
+                                                Color.BLUE
+                                            )
+                                        )
+                                        progressBar.visibility = View.INVISIBLE
+                                        initializeFlag = true
                                     }
                                 }
                             }
@@ -471,7 +475,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             for (booking in listBooking) {
                 if (Util.getDistance(
                         LatLng(location!!.latitude, location!!.longitude),
-                        LatLng(booking.pickupLat!!, booking.pickupLong!!)
+                        LatLng(booking.pickUpLat!!, booking.pickUpLong!!)
                     ) < 200 && booking.rideStatus == "booked"
                 ) {
                     //Bottom sheet
@@ -489,9 +493,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                             }
                     }
                     view.findViewById<TextView>(R.id.bookingNameTextView).text =
-                        booking.bookingMadeBy
-                    view.findViewById<TextView>(R.id.noOfSeatsTextView).text =
-                        booking.numberOfSeats.toString()
+                        booking.username
+
                     dialog.setContentView(view)
                     dialog.show()
 
@@ -520,9 +523,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
                     }
                     view.findViewById<TextView>(R.id.bookingNameTextView).text =
-                        booking.bookingMadeBy
-                    view.findViewById<TextView>(R.id.totalFareTextView).text =
-                        booking.totalFare.toString()
+                        booking.username
+
                     dialog.setContentView(view)
                     dialog.show()
                 }

@@ -47,7 +47,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/img_pickupAddress" />
 
         <TextView
-                android:id="@+id/txt_pickupAddress"
+                android:id="@+id/textViewPickUpAddress"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -60,7 +60,7 @@ Nazimabad, Karach, Karachi City, Sindh"
                 app:layout_constraintTop_toTopOf="@+id/img_pickupAddress" />
 
         <TextView
-                android:id="@+id/txt_dropoffAddress"
+                android:id="@+id/textViewDropOffAddress"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -74,7 +74,7 @@ Karachi City, Sindh, Pakistan"
                 app:layout_constraintTop_toTopOf="@+id/img_dropoffAddress" />
 
         <TextView
-                android:id="@+id/txt_lbl_noPassemger"
+                android:id="@+id/textViewBookingName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -83,7 +83,7 @@ Karachi City, Sindh, Pakistan"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@+id/img_dropoffAddress"
-                app:layout_constraintTop_toBottomOf="@+id/txt_dropoffAddress" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewDropOffAddress" />
 
 
         <TextView
@@ -97,8 +97,8 @@ Karachi City, Sindh, Pakistan"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/txt_lbl_noPassemger"
-                app:layout_constraintTop_toBottomOf="@+id/txt_lbl_noPassemger" />
+                app:layout_constraintStart_toStartOf="@+id/textViewBookingName"
+                app:layout_constraintTop_toBottomOf="@+id/textViewBookingName" />
 
         <TextView
                 android:id="@+id/txt_lbl_startTime"
@@ -111,7 +111,7 @@ Karachi City, Sindh, Pakistan"
                 android:textColor="@color/colorText1"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_dropoffAddress" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewDropOffAddress" />
 
         <TextView
                 android:id="@+id/txt_startTime"
