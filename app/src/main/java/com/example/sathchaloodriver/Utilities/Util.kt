@@ -40,9 +40,9 @@ class Util {
             return globals
         }
 
-        fun getDriverId(): String {
-            return "h2rVtOe6Lk4Qe6kVKoXR"
-        }
+//        fun getDriverId(): String {
+//            return "h2rVtOe6Lk4Qe6kVKoXR"
+//        }
 
         //Function to return formatted date
         fun getFormattedDate(addDays: Long = 0): String {

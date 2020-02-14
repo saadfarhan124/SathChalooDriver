@@ -29,6 +29,7 @@ import com.example.prototype.dataModels.Booking
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.Utilities.Util
 import com.example.sathchaloodriver.adapters.RouteSelectAdapter
+import com.example.sathchaloodriver.dataModels.DriverRideDataModel
 import com.example.sathchaloodriver.dataModels.RoutesDataModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
@@ -184,16 +185,27 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         listBooking = mutableListOf()
         btnEndRide = root.findViewById(R.id.btnEndRide)
         btnEndRide.onClick {
+            var driverRide = DriverRideDataModel(
+                Util.getGlobals().user!!.uid,
+                listBooking,
+                Util.getFormattedDate()
+            )
             val alert = Util.getAlertDialog(root.context)
             alert.setMessage("Do you really want to complete this ride ?")
             alert.setPositiveButton("Yes") { _, _ ->
-
+                Util.getFireStoreInstance().collection("DriverRides")
+                    .add(driverRide)
+                    .addOnSuccessListener {
+                        mMap.clear()
+                        moveCamera(LatLng(25.1921465, 66.5949924), 6f)
+                    }
             }
             alert.setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
         }
         btnStartRide = root.findViewById(R.id.btnStartRide)
+        btnStartRide.enabled = false
         btnStartRide.setOnClickListener {
             moveCamera(
                 LatLng(marker.position.latitude, marker.position.longitude),
@@ -487,6 +499,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 ) < 1000
             ) {
                 btnEndRide.enabled = true
+            }
+            if(Util.getDistance(LatLng(location.latitude, location.longitude),
+                    startingPointLatLng) < 1000){
+                btnStartRide.enabled = true
             }
             for (booking in listBooking) {
                 if (Util.getDistance(
