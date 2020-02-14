@@ -42,6 +42,7 @@ import org.jetbrains.anko.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+import kotlin.system.exitProcess
 
 
 class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
@@ -86,9 +87,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var listOfRouteIds: MutableList<String>
 
 
-
     private lateinit var root: View
-
 
 
     override fun onCreateView(
@@ -105,13 +104,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 .get()
                 .addOnSuccessListener {
                     listOfRouteIds = mutableListOf()
-                    for (doc in it.documents){
+                    for (doc in it.documents) {
                         listOfRouteIds.add(doc["routeId"].toString())
                     }
                     AndroidThreeTen.init(this.activity)
                     getLocationPermission()
                     init()
-                    if(activity!!.intent.extras != null){
+                    if (activity!!.intent.extras != null) {
                         routeID = activity!!.intent.extras!!["selectedRouteID"].toString()
                         loadroutes()
                     }
@@ -123,8 +122,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             confirmDialog.setTitle("Sath Chaloo")
             confirmDialog.setMessage("Please connect to internet")
             confirmDialog.setPositiveButton("Ok") { _, _ ->
-                activity!!.finishAffinity();
-                System.exit(0)
+                activity!!.finishAffinity()
+                exitProcess(0)
             }
             confirmDialog.show()
         }
@@ -140,16 +139,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
     }
 
-    private fun getDocumentId() {
-        Util.getFireStoreInstance().collection("DriverRoute")
-            .whereEqualTo("driverId", Util.getGlobals().user!!.uid)
-            .get()
-            .addOnSuccessListener {
-                driverDocumentRef = Util.getFireStoreInstance().collection("DriverRoute")
-                    .document(it.first().id)
-            }
-    }
-
+//    private fun getDocumentId() {
+//        Util.getFireStoreInstance().collection("DriverRoute")
+//            .whereEqualTo("driverId", Util.getGlobals().user!!.uid)
+//            .get()
+//            .addOnSuccessListener {
+//                driverDocumentRef = Util.getFireStoreInstance().collection("DriverRoute")
+//                    .document(it.first().id)
+//            }
+//    }
 
 
     private fun init() {
@@ -157,14 +155,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
 
         val listOfRoutes = mutableListOf<RoutesDataModel>()
-        for(routeID in listOfRouteIds){
+        for (routeID in listOfRouteIds) {
             Util.getFireStoreInstance().collection("Routes")
                 .document(routeID)
                 .get()
                 .addOnSuccessListener {
                     val route = it.toObject(RoutesDataModel::class.java)
                     route!!.routeID = it.id
-                    listOfRoutes.add(route!!)
+                    listOfRoutes.add(route)
                     progressBar.visibility = View.INVISIBLE
                 }
         }
@@ -188,26 +186,23 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         btnEndRide.onClick {
             val alert = Util.getAlertDialog(root.context)
             alert.setMessage("Do you really want to complete this ride ?")
-            alert.setPositiveButton("Yes"){_,_ ->
+            alert.setPositiveButton("Yes") { _, _ ->
 
             }
-            alert.setNegativeButton("No"){dialog,_ ->
+            alert.setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
         }
         btnStartRide = root.findViewById(R.id.btnStartRide)
         btnStartRide.setOnClickListener {
-            listBooking[0].rideStatus = "completed"
-            Util.getGlobals().listOfCurrentBookings = listBooking
-
-//            moveCamera(
-//                LatLng(marker.position.latitude, marker.position.longitude),
-//                Util.getBiggerZoomValue()
-//            )
-//            //Updating booking status
-//            driverDocumentRef.update("rideStatus", "started")
-//            btnStartRide.visibility = View.INVISIBLE
-//            btnEndRide.visibility = View.VISIBLE
+            moveCamera(
+                LatLng(marker.position.latitude, marker.position.longitude),
+                Util.getBiggerZoomValue()
+            )
+            //Updating booking status
+            driverDocumentRef.update("rideStatus", "started")
+            btnStartRide.visibility = View.INVISIBLE
+            btnEndRide.visibility = View.VISIBLE
         }
 
         btnEndRide.setOnClickListener {
@@ -252,23 +247,23 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     private fun loadroutes() {
-        var db = Util.getFireStoreInstance()
+        val db = Util.getFireStoreInstance()
         //retrieve route
         db.collection("Routes").document(routeID)
             .get()
             .addOnSuccessListener { routeDetails ->
-                var startingPoint = routeDetails["startingPoint"] as GeoPoint
+                val startingPoint = routeDetails["startingPoint"] as GeoPoint
 
-                var endingPoint = routeDetails["endingPoint"] as GeoPoint
+                val endingPoint = routeDetails["endingPoint"] as GeoPoint
                 startingPointLatLng =
                     LatLng(startingPoint.latitude, startingPoint.longitude)
                 endingPointLatLng = LatLng(endingPoint.latitude, endingPoint.longitude)
                 addMarkerEnding(
-                    endingPointLatLng!!
+                    endingPointLatLng
                     , "Ending"
                 )
                 addMarkerStarting(
-                    startingPointLatLng!!
+                    startingPointLatLng
                     , "Starting"
                 )
                 //get bookings on that route for that day
@@ -284,16 +279,17 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     }
                     .addOnSuccessListener { taskGetBookingsAccordingToRouteIdAndCurrentDay ->
                         if (taskGetBookingsAccordingToRouteIdAndCurrentDay.isEmpty) {
-                            Toast.makeText(root.context, "No Bookings Found", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(root.context, "No Bookings Found", Toast.LENGTH_SHORT)
+                                .show()
                             progressBar.visibility = View.INVISIBLE
                         } else {
-                            for (doc in taskGetBookingsAccordingToRouteIdAndCurrentDay.documents!!) {
+                            for (doc in taskGetBookingsAccordingToRouteIdAndCurrentDay.documents) {
                                 Log.d("SAAD", doc.toString())
-                                var pickUpLatLng = LatLng(
+                                val pickUpLatLng = LatLng(
                                     doc["pickUpLat"].toString().toDouble(),
                                     doc["pickUpLong"].toString().toDouble()
                                 )
-                                var droppOffLatLng = LatLng(
+                                val droppOffLatLng = LatLng(
                                     doc["dropOffLat"].toString().toDouble(),
                                     doc["dropOffLong"].toString().toDouble()
                                 )
@@ -301,7 +297,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                                 ListDropOffLatLng.add(droppOffLatLng)
                                 val booking = doc.toObject(Booking::class.java)
                                 booking!!.bookingId = doc.id
-                                listBooking.add(booking!!)
+                                listBooking.add(booking)
                                 addMarkerPickUp(
                                     pickUpLatLng,
                                     "Pickup : ${booking.username}"
@@ -314,8 +310,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                             if (ListDropOffLatLng.size > 0) {
                                 Util.getGlobals().listOfCurrentBookings = listBooking
                                 val url = Util.getURL(
-                                    startingPointLatLng!!,
-                                    endingPointLatLng!!,
+                                    startingPointLatLng,
+                                    endingPointLatLng,
                                     getString(R.string.google_maps_key),
                                     ListPickUpLatLng,
                                     ListDropOffLatLng
@@ -483,18 +479,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     override fun onLocationChanged(location: Location?) {
         if (initializeFlag) {
-            moveCamera(LatLng(location!!.latitude, location!!.longitude), Util.getBiggerZoomValue())
+            moveCamera(LatLng(location!!.latitude, location.longitude), Util.getBiggerZoomValue())
             updateLocationInDb(location)
             if (Util.getDistance(
-                    LatLng(location!!.latitude, location!!.longitude),
-                    endingPointLatLng!!
+                    LatLng(location.latitude, location.longitude),
+                    endingPointLatLng
                 ) < 1000
             ) {
                 btnEndRide.enabled = true
             }
             for (booking in listBooking) {
                 if (Util.getDistance(
-                        LatLng(location!!.latitude, location!!.longitude),
+                        LatLng(location.latitude, location.longitude),
                         LatLng(booking.pickUpLat!!, booking.pickUpLong!!)
                     ) < 200 && booking.rideStatus == "Booked"
                 ) {
@@ -504,11 +500,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     view.findViewById<Button>(R.id.btnPickUp).onClick {
                         //Update booking status
                         booking.rideStatus = "pickedUp"
+
                         //Updating ride status in db
                         Util.getFireStoreInstance().collection("Booking")
                             .document(booking.bookingId.toString())
                             .set(booking)
                             .addOnSuccessListener {
+                                Util.getGlobals().listOfCurrentBookings = listBooking
                                 dialog.dismiss()
                             }
                     }
@@ -519,7 +517,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     dialog.show()
 
                 } else if (Util.getDistance(
-                        LatLng(location!!.latitude, location!!.longitude),
+                        LatLng(location.latitude, location.longitude),
                         LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
                     ) < 200 && booking.rideStatus == "pickedUp"
                 ) {
@@ -531,14 +529,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                         Util.getFireStoreInstance().collection("Booking")
                             .document(booking.bookingId.toString())
                             .set(booking)
-                            .addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    Toast.makeText(
-                                        root.context,
-                                        "Ride ended successfully",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
+                            .addOnSuccessListener {
+                                Toast.makeText(
+                                    root.context,
+                                    "Ride ended successfully",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                Util.getGlobals().listOfCurrentBookings = listBooking
                                 dialog.dismiss()
                             }
 
@@ -569,8 +566,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             startActivity(intent)
         }
         alertDialog.setNegativeButton("No") { _, _ ->
-            activity!!.finishAffinity();
-            System.exit(0)
+            activity!!.finishAffinity()
+            exitProcess(0)
         }
 
     }
