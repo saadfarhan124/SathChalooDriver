@@ -199,43 +199,58 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         listBooking = mutableListOf()
         btnEndRide = root.findViewById(R.id.btnEndRide)
         btnEndRide.onClick {
-            endingTime = SimpleDateFormat("HH:mm:ss").format(Date())
-            var driverRide = DriverRideDataModel(
-                Util.getGlobals().user!!.uid,
-                selectedRoute["startingAddress"].toString(),
-                selectedRoute["endingAddress"].toString(),
-                startingTime!!,
-                endingTime!!,
-                selectedRoute.id,
-                listBooking,
-                Util.getFormattedDate()
-            )
-            val alert = Util.getAlertDialog(root.context)
-            alert.setMessage("Do you really want to complete this ride ?")
-            alert.setPositiveButton("Yes") { _, _ ->
-                Util.getFireStoreInstance().collection("DriverRides")
-                    .add(driverRide)
-                    .addOnSuccessListener {
-                        mMap.clear()
-                        moveCamera(LatLng(25.1921465, 66.5949924), 6f)
-                    }
-            }
-            alert.setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss()
+            if(endingFlag){
+                endingTime = SimpleDateFormat("HH:mm:ss").format(Date())
+                var driverRide = DriverRideDataModel(
+                    Util.getGlobals().user!!.uid,
+                    selectedRoute["startingAddress"].toString(),
+                    selectedRoute["endingAddress"].toString(),
+                    startingTime!!,
+                    endingTime!!,
+                    selectedRoute.id,
+                    listBooking,
+                    Util.getFormattedDate()
+                )
+                val alert = Util.getAlertDialog(root.context)
+                alert.setMessage("Do you really want to complete this ride ?")
+                alert.setPositiveButton("Yes") { _, _ ->
+                    Util.getFireStoreInstance().collection("DriverRides")
+                        .add(driverRide)
+                        .addOnSuccessListener {
+                            mMap.clear()
+                            moveCamera(LatLng(25.1921465, 66.5949924), 6f)
+                        }
+                }
+                alert.setNegativeButton("No") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                alert.show()
+            }else{
+                Toast.makeText(root.context, "You are away from your ending point", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
         btnStartRide = root.findViewById(R.id.btnStartRide)
-        btnStartRide.enabled = false
         btnStartRide.setOnClickListener {
-            startingTime = SimpleDateFormat("HH:mm:ss").format(Date())
-            moveCamera(
-                LatLng(marker.position.latitude, marker.position.longitude),
-                Util.getBiggerZoomValue()
-            )
-            //Updating booking status
-            driverDocumentRef.update("rideStatus", "started")
-            btnStartRide.visibility = View.INVISIBLE
-            btnEndRide.visibility = View.VISIBLE
+            if(startingFlag){
+                progressBar.visibility = View.VISIBLE
+                startingTime = SimpleDateFormat("HH:mm:ss").format(Date())
+                moveCamera(
+                    LatLng(marker.position.latitude, marker.position.longitude),
+                    Util.getBiggerZoomValue()
+                )
+                //Updating booking status
+                driverDocumentRef.update("rideStatus", "started")
+                    .addOnSuccessListener {
+                        btnStartRide.visibility = View.INVISIBLE
+                        btnEndRide.visibility = View.VISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                    }
+
+            }else{
+                Toast.makeText(root.context, "You are away from your starting point", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
 
 
@@ -248,8 +263,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             try {
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    15000,
-                    10f,
+                    1000,
+                    1f,
                     this
                 )
             } catch (e: SecurityException) {
@@ -506,25 +521,26 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     override fun onLocationChanged(location: Location?) {
+        Toast.makeText(root.context, location.toString(), Toast.LENGTH_SHORT).show()
         if (initializeFlag) {
             moveCamera(LatLng(location!!.latitude, location.longitude), Util.getBiggerZoomValue())
             updateLocationInDb(location)
             if (Util.getDistance(
                     LatLng(location.latitude, location.longitude),
                     endingPointLatLng
-                ) < 1000
+                ) < 10000
             ) {
-                btnEndRide.enabled = true
+                endingFlag = true
             }
             if(Util.getDistance(LatLng(location.latitude, location.longitude),
-                    startingPointLatLng) < 1000){
-                btnStartRide.enabled = true
+                    startingPointLatLng) < 10000){
+                startingFlag = true
             }
             for (booking in listBooking) {
                 if (Util.getDistance(
                         LatLng(location.latitude, location.longitude),
                         LatLng(booking.pickUpLat!!, booking.pickUpLong!!)
-                    ) < 200 && booking.rideStatus == "Booked"
+                    ) < 20000 && booking.rideStatus == "Booked"
                 ) {
                     //Bottom sheet
                     val view = layoutInflater.inflate(R.layout.activity_pickup_bottomsheet, null)
@@ -551,7 +567,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 } else if (Util.getDistance(
                         LatLng(location.latitude, location.longitude),
                         LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
-                    ) < 200 && booking.rideStatus == "pickedUp"
+                    ) < 20000 && booking.rideStatus == "pickedUp"
                 ) {
                     val view = layoutInflater.inflate(R.layout.activity_dropoff_bottomsheet, null)
                     val dialog = BottomSheetDialog(root.context)
