@@ -44,6 +44,8 @@ import org.jetbrains.anko.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.system.exitProcess
 
 
@@ -93,6 +95,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
 
     private lateinit var root: View
+
+    //Starting Time and Ending Time vars
+    private var startingTime: String? = null
+    private var endingTime: String? = null
+
+    //Start and ending buttons flag
+    private var startingFlag: Boolean = false
+    private var endingFlag: Boolean = false
 
 
     override fun onCreateView(
@@ -189,10 +199,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         listBooking = mutableListOf()
         btnEndRide = root.findViewById(R.id.btnEndRide)
         btnEndRide.onClick {
+            endingTime = SimpleDateFormat("HH:mm:ss").format(Date())
             var driverRide = DriverRideDataModel(
                 Util.getGlobals().user!!.uid,
                 selectedRoute["startingAddress"].toString(),
                 selectedRoute["endingAddress"].toString(),
+                startingTime!!,
+                endingTime!!,
                 selectedRoute.id,
                 listBooking,
                 Util.getFormattedDate()
@@ -214,6 +227,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         btnStartRide = root.findViewById(R.id.btnStartRide)
         btnStartRide.enabled = false
         btnStartRide.setOnClickListener {
+            startingTime = SimpleDateFormat("HH:mm:ss").format(Date())
             moveCamera(
                 LatLng(marker.position.latitude, marker.position.longitude),
                 Util.getBiggerZoomValue()
@@ -224,16 +238,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
             btnEndRide.visibility = View.VISIBLE
         }
 
-        btnEndRide.setOnClickListener {
-            val confirmDialog =
-                AlertDialog.Builder(root.context, R.style.ThemeOverlay_MaterialComponents_Dialog)
-            confirmDialog.setTitle("Sath Chaloo")
-            confirmDialog.setMessage("Finish ride")
-            confirmDialog.setPositiveButton("Ok") { _, _ ->
 
-            }
-            confirmDialog.show()
-        }
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -295,6 +300,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                         routeDetails.id
                     )
                     .whereEqualTo("selectedDay", "Wednesday")
+                    .whereEqualTo("rideStatus", "Booked")
                     .get()
                     .addOnFailureListener {
                         Toast.makeText(root.context, it.message, Toast.LENGTH_SHORT).show()
