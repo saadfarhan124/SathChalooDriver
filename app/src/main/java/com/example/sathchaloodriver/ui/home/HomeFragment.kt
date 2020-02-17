@@ -122,12 +122,20 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     for (doc in it.documents) {
                         listOfRouteIds.add(doc["routeId"].toString())
                     }
+
                     AndroidThreeTen.init(this.activity)
                     getLocationPermission()
                     init()
                     if (activity!!.intent.extras != null) {
                         routeID = activity!!.intent.extras!!["selectedRouteID"].toString()
-                        loadroutes()
+                        Util.getFireStoreInstance().collection("DriverRoute")
+                            .whereEqualTo("routeID", routeID)
+                            .get()
+                            .addOnSuccessListener {
+                                getDocumentId()
+                                loadroutes()
+
+                            }
                     }
 
                 }
@@ -154,15 +162,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
     }
 
-//    private fun getDocumentId() {
-//        Util.getFireStoreInstance().collection("DriverRoute")
-//            .whereEqualTo("driverId", Util.getGlobals().user!!.uid)
-//            .get()
-//            .addOnSuccessListener {
-//                driverDocumentRef = Util.getFireStoreInstance().collection("DriverRoute")
-//                    .document(it.first().id)
-//            }
-//    }
+    private fun getDocumentId() {
+        Util.getFireStoreInstance().collection("DriverRoute")
+            .whereEqualTo("routeId", routeID)
+            .get()
+            .addOnSuccessListener {
+                driverDocumentRef = Util.getFireStoreInstance().collection("DriverRoute")
+                    .document(it.first().id)
+            }
+    }
 
 
     private fun init() {
@@ -540,7 +548,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 if (Util.getDistance(
                         LatLng(location.latitude, location.longitude),
                         LatLng(booking.pickUpLat!!, booking.pickUpLong!!)
-                    ) < 20000 && booking.rideStatus == "Booked"
+                    ) < 1000 && booking.rideStatus == "Booked"
                 ) {
                     //Bottom sheet
                     val view = layoutInflater.inflate(R.layout.activity_pickup_bottomsheet, null)
@@ -567,7 +575,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 } else if (Util.getDistance(
                         LatLng(location.latitude, location.longitude),
                         LatLng(booking.dropOffLat!!, booking.dropOffLong!!)
-                    ) < 20000 && booking.rideStatus == "pickedUp"
+                    ) < 1000 && booking.rideStatus == "pickedUp"
                 ) {
                     val view = layoutInflater.inflate(R.layout.activity_dropoff_bottomsheet, null)
                     val dialog = BottomSheetDialog(root.context)
