@@ -77,7 +77,8 @@
             android:textColor="@color/colorText1"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/textView42"
-            app:layout_constraintTop_toBottomOf="@+id/textView42" />
+            app:layout_constraintTop_toBottomOf="@+id/textView42"
+            tools:visibility="gone" />
 
     <TextView
             android:id="@+id/noOfSeatsTextView"
@@ -89,5 +90,6 @@
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView2"
             app:layout_constraintStart_toEndOf="@+id/textView2"
-            app:layout_constraintTop_toTopOf="@+id/textView2" />
+            app:layout_constraintTop_toTopOf="@+id/textView2"
+            tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,15 +1,20 @@
 package com.example.sathchaloodriver.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sathchaloodriver.MainActivity
 import com.example.sathchaloodriver.R
+import com.example.sathchaloodriver.dataModels.RoutesDataModel
 import org.jetbrains.anko.onClick
 
-class RouteSelectAdapter(private var context: Context): RecyclerView.Adapter<RouteSelectViewHolder>() {
+class RouteSelectAdapter(private var context: Context,
+                         private var listOfRoutes: MutableList<RoutesDataModel>
+): RecyclerView.Adapter<RouteSelectAdapter.RouteSelectViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RouteSelectViewHolder {
         val LayoutInflater = LayoutInflater.from(parent.context)
         val cellForRow = LayoutInflater.inflate(R.layout.activity_routeselect_row, parent, false)
@@ -17,18 +22,27 @@ class RouteSelectAdapter(private var context: Context): RecyclerView.Adapter<Rou
     }
 
     override fun getItemCount(): Int {
-        return 5
+        return listOfRoutes.size
     }
 
     override fun onBindViewHolder(holder: RouteSelectViewHolder, position: Int) {
+        val route = listOfRoutes[position]
+
+        holder.txt_pickupAddress.text = route.startingAddress
+        holder.txt_dropoffAddress.text = route.endingAddress
+        holder.txt_startTime.text = route.startingTime
+
         holder.itemView.onClick {
-
-
-
-            Toast.makeText(context ,"1", Toast.LENGTH_LONG).show()
+            var intent = Intent(context, MainActivity::class.java)
+            intent.putExtra("selectedRouteID", route.routeID)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
         }
     }
-}
-class RouteSelectViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
+    inner class RouteSelectViewHolder internal constructor(view: View) : RecyclerView.ViewHolder(view) {
+        internal var txt_pickupAddress: TextView = view.findViewById(R.id.textViewPickUpAddress)
+        internal var txt_dropoffAddress: TextView = view.findViewById(R.id.textViewDropOffAddress)
+        internal var txt_startTime: TextView = view.findViewById(R.id.txt_startTime)
+    }
 }

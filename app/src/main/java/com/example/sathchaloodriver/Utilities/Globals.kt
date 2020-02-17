@@ -2,6 +2,7 @@ package com.example.sathchaloodriver.Utilities
 
 import android.graphics.Bitmap
 import android.net.Uri
+import com.example.prototype.dataModels.Booking
 import com.google.firebase.auth.FirebaseUser
 
 class Globals{
@@ -9,6 +10,7 @@ class Globals{
         var user: FirebaseUser? = null
         var imageUri: Uri? = null
         var userImage: Bitmap? = null
-        var requestID:Int?  = 0
+        var listOfCurrentBookings:MutableList<Booking> = mutableListOf()
+
     }
 }
