@@ -11,11 +11,15 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sathchaloodriver.R
+import com.example.sathchaloodriver.Utilities.Util
 import com.example.sathchaloodriver.adapters.NotificationAdapter
+import com.example.sathchaloodriver.dataModels.NotificationDataModel
 
 class NotificationsFragment : Fragment() {
 
 //    private lateinit var notificationsViewModel: NotificationsViewModel
+    private lateinit var root:View
+private lateinit var listOfNotification: MutableList<NotificationDataModel>
 private lateinit var mRecyclerView: RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,9 +33,31 @@ private lateinit var mRecyclerView: RecyclerView
 //        notificationsViewModel.text.observe(this, Observer {
 //            textView.text = it
 //        })
-        mRecyclerView = root.findViewById(R.id.notificationRecyclerView)
-        mRecyclerView.layoutManager = LinearLayoutManager(root.context)
-        mRecyclerView.adapter = NotificationAdapter()
+//        mRecyclerView = root.findViewById(R.id.notificationRecyclerView)
+//        mRecyclerView.layoutManager = LinearLayoutManager(root.context)
+//        mRecyclerView.adapter = NotificationAdapter()
+        loadNotification()
         return root
     }
-}
+
+        private fun loadNotification(){
+            listOfNotification = mutableListOf()
+
+            Util.getFireStoreInstance().collection("driverNotification")
+                .whereEqualTo("userID", Util.getGlobals().user!!.uid)
+                .get()
+                .addOnSuccessListener {
+
+                    for(document in it.documents){
+
+                        val notification = document.toObject(NotificationDataModel::class.java)
+                        listOfNotification.add(notification!!)
+                    }
+                    mRecyclerView = root.findViewById(R.id.notificationRecyclerView)
+                    mRecyclerView.layoutManager = LinearLayoutManager(root.context)
+                    mRecyclerView.adapter = NotificationAdapter(listOfNotification)
+
+                }
+        }
+
+    }
