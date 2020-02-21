@@ -350,7 +350,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
                             android:fontFamily="@font/roboto_medium"
-                            android:text="NIC"
+                            android:text="CNIC"
                             android:textColor="@color/colorText1"
                             android:textSize="16sp"
                             app:layout_constraintStart_toEndOf="@+id/img_nic"
