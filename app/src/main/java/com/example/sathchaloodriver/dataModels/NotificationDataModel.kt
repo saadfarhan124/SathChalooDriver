@@ -11,4 +11,5 @@ class NotificationDataModel :Serializable{
         this.heading = heading
         this.subHeading = subHeading
     }
+    constructor()
 }
