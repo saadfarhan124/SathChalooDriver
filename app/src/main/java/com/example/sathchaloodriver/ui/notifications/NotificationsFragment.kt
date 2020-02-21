@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.example.sathchaloodriver.R
 import com.example.sathchaloodriver.Utilities.Util
 import com.example.sathchaloodriver.adapters.NotificationAdapter
@@ -20,6 +21,7 @@ class NotificationsFragment : Fragment() {
     private lateinit var root:View
     private lateinit var listOfNotification: MutableList<NotificationDataModel>
     private lateinit var mRecyclerView: RecyclerView
+    private  lateinit var shimmerRecyclerView: ShimmerRecyclerView
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,20 +30,15 @@ class NotificationsFragment : Fragment() {
 //        notificationsViewModel =
 //            ViewModelProviders.of(this).get(NotificationsViewModel::class.java)
          root = inflater.inflate(R.layout.fragment_notifications, container, false)
-//        val textView: TextView = root.findViewById(R.id.text_notifications)
-//        notificationsViewModel.text.observe(this, Observer {
-//            textView.text = it
-//        })
-//        mRecyclerView = root.findViewById(R.id.notificationRecyclerView)
-//        mRecyclerView.layoutManager = LinearLayoutManager(root.context)
-//        mRecyclerView.adapter = NotificationAdapter()
+        shimmerRecyclerView = root.findViewById(R.id.shimmer_recycler_view)
+
         loadNotification()
         return root
     }
 
         private fun loadNotification(){
+            shimmerRecyclerView.visibility = View.VISIBLE
             listOfNotification = mutableListOf()
-
             Util.getFireStoreInstance().collection("driverNotification")
                 .whereEqualTo("userID", Util.getGlobals().user!!.uid)
                 .get()
@@ -55,7 +52,7 @@ class NotificationsFragment : Fragment() {
                     mRecyclerView = root.findViewById(R.id.notificationRecyclerView)
                     mRecyclerView.layoutManager = LinearLayoutManager(root.context)
                     mRecyclerView.adapter = NotificationAdapter(listOfNotification)
-
+                    shimmerRecyclerView.visibility = View.INVISIBLE
                 }
         }
 
