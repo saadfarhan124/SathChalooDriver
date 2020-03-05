@@ -12,4 +12,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+            android:id="@+id/shimmer_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shimmer_demo_angle="20"
+            app:shimmer_demo_child_count="3"
+            app:shimmer_demo_layout="@layout/activity_notification_shimmer"
+            app:shimmer_demo_layout_manager_type="linear_vertical" />
 </androidx.constraintlayout.widget.ConstraintLayout>

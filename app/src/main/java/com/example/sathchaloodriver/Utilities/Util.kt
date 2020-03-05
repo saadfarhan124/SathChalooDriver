@@ -34,6 +34,8 @@ class Util {
             return FirebaseAuth.getInstance()
         }
 
+
+
         //Function to access companion object
         fun getGlobals(): Globals{
             var globals = Globals

@@ -63,23 +63,23 @@ class ProfileFragment: Fragment(){
 
         root = inflater.inflate(R.layout.fragment_profile, container, false)
         //setting profile icons
-        imageViewNumberIcon = root.findViewById(R.id.img_num)
-        imageViewNumberIcon.setImageResource(R.drawable.ic_phone)
-
-        imageViewEmailIcon = root.findViewById(R.id.img_email)
-        imageViewEmailIcon.setImageResource(R.drawable.ic_email)
-
-        imageViewPasswordIcon = root.findViewById(R.id.img_pas)
-        imageViewPasswordIcon.setImageResource(R.drawable.ic_changepass)
-
-        imageViewGenderIcon = root.findViewById(R.id.img_gen)
-        imageViewGenderIcon.setImageResource(R.drawable.ic_gender)
-
-        imageViewDobIcon = root.findViewById(R.id.img_dob)
-        imageViewDobIcon.setImageResource(R.drawable.ic_dob)
-
-        imageViewLogoutIcon = root.findViewById(R.id.img_logout)
-        imageViewLogoutIcon.setImageResource(R.drawable.ic_logout)
+//        imageViewNumberIcon = root.findViewById(R.id.img_num)
+//        imageViewNumberIcon.setImageResource(R.drawable.ic_phone)
+//
+//        imageViewEmailIcon = root.findViewById(R.id.img_email)
+//        imageViewEmailIcon.setImageResource(R.drawable.ic_email)
+//
+//        imageViewPasswordIcon = root.findViewById(R.id.img_pas)
+//        imageViewPasswordIcon.setImageResource(R.drawable.ic_changepass)
+//
+//        imageViewGenderIcon = root.findViewById(R.id.img_gen)
+//        imageViewGenderIcon.setImageResource(R.drawable.ic_gender)
+//
+//        imageViewDobIcon = root.findViewById(R.id.img_dob)
+//        imageViewDobIcon.setImageResource(R.drawable.ic_dob)
+//
+//        imageViewLogoutIcon = root.findViewById(R.id.img_logout)
+//        imageViewLogoutIcon.setImageResource(R.drawable.ic_logout)
 
         //profile picture
         imageViewDisplayPicture = root.findViewById(R.id.imageViewUserDisplay)

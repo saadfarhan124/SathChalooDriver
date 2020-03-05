@@ -26,7 +26,7 @@
                 app:srcCompat="@drawable/mob" />
 
         <TextView
-                android:id="@+id/textView69"
+                android:id="@+id/textViewNotifHeading"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -40,7 +40,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/imageView23" />
 
         <TextView
-                android:id="@+id/textView70"
+                android:id="@+id/textViewNotifSubHeading"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -54,7 +54,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView69" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewNotifHeading" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>
